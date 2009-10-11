@@ -1,0 +1,109 @@
+<?php
+
+class SessionHandler
+{
+    
+    private $DB = null;
+    
+    
+    public function __construct()
+    {
+        $this->DB = $GLOBALS['DB'];
+        
+        //Den Session-Handler auf die Methoden dieser Klasse setzen.
+        session_set_save_handler(array ($this, '_open'),
+                                 array ($this, '_close'),
+                                 array ($this, '_read'),
+                                 array ($this, '_write'),
+                                 array ($this, '_destroy'),
+                                 array ($this, '_gc'));
+         
+         //Session starten
+         session_start();
+         
+         //Zuerst Session-Daten speichern, dann Objekte zerstören. (Ab PHP 5.0.5)
+         register_shutdown_function('session_write_close');
+    }
+    
+    public function _open($path, $name)
+    {
+        return true;
+    }
+    
+    public function _close()
+    {
+        //Den Garbage Collector aufrufen
+        $this->_gc(0);
+        return true;
+    }
+    
+    public function _read($sesID)
+    {
+        $sessionStatement = 'SELECT * FROM sessions WHERE id = '.$sesID.'';
+        $result           = $this->DB->query($sessionStatement);
+        
+        if ($result === false) {
+            return '';
+        }
+        echo '$result';
+        var_dump($result);
+        $result = $result->fetch_assoc();
+        echo '$result';
+        var_dump($result);        
+        if (count($result) > 0) {
+            return $result[0]['value']; 
+        }
+        else {
+            return '';
+        }
+    }
+    
+    public function _write($sesID, $data)
+    {
+        //Nur schreiben, wenn Daten übergeben wurden
+        if ($data == null) {
+            return true;
+        }
+        
+        //Eine bestehende Sitzung aktualisieren
+        $sessionStatement = 'UPDATE sessions SET lastUpdated = '.time().' value = '.$data.' WHERE id = '.$sesID.'';
+        $result           = $this->DB->query($sessionStatement);
+        
+        if ($result === false) {
+            return false;
+        }
+        if ($this->DB->MySQLiObj->affected_rows) {
+            
+            //Bestehende Session wurde aktualisiert
+            return true;
+        }
+        
+        //Die Session existiert noch nicht und wird angelegt.
+        $sessionStatement = 'INSERT INTO sessions (id, lastUpdated, start, value) 
+                                                   VALUES ('.$sesID.', '.time().', '.time().', '.$data.')';
+        $result = $this->DB->query($sessionStatement);
+        
+        return $result;
+    }
+    
+    public function _destroy($sesID)
+    {
+        $sessionStatement = 'DELETE FROM sessions WHERE id = '.$sesID.'';
+        $result           = $this->DB->query($sessionStatement);
+        
+        return true;
+    }
+    
+    public function _gc($life)
+    {
+        //Zeitraum, nach der eine Session als abgelaufen gilt.
+        $sessionLife      = strtotime('-15 minutes');
+        $sessionStatement = 'DELETE FROM sessions WHERE lastUpdated = < '.$sessionLife.'';
+        $result           = $this->DB->query($sessionStatement);
+        
+        return true;
+    }
+    
+}
+
+?>

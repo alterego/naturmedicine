@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>Pavel Pozdyshev - Konzerte-Feed</title>
+    <description>Mit diesem Feed werden Sie über die aktuellen Konzerte von Pavel Pozdyshev informiert.</description>
+    <language>de-de</language>
+    <link>https://localhost/pavel/konzerte.php</link>
+    <lastBuildDate>Mon, 8 Jun 2009 19:49:31 +0200</lastBuildDate>
+    <item>
+      <title>Bern, 04.06.2009</title>
+      <description>Nydeggkirche, 20:00 Uhr&lt;br /&gt;Rezital: Mozart, Bach, Chopin</description>
+      <link>http://pavel.annaeherungsversuch.com/konzerte.php#n1</link>
+      <pubDate>0000-00-00 00:00:00</pubDate>
+      <guid>http://pavel.annaeherungsversuch.com/konzerte.php#n1</guid>
+    </item>
+    <item>
+      <title>Boswil, 05.06.2009</title>
+      <description>Alte Kirche, 20:00 Uhr&lt;br /&gt;Violoncellosonaten mit Fedor Saminski: Brahms, Beethoven, Schubert</description>
+      <link>http://pavel.annaeherungsversuch.com/konzerte.php#n2</link>
+      <pubDate>0000-00-00 00:00:00</pubDate>
+      <guid>http://pavel.annaeherungsversuch.com/konzerte.php#n2</guid>
+    </item>
+    <item>
+      <title>Frauenfeld, 07.06.2009</title>
+      <description>Evang. Stadtkirche, 20:00 Uhr&lt;br /&gt;Rezital: Fauré, Mozart</description>
+      <link>http://pavel.annaeherungsversuch.com/konzerte.php#n3</link>
+      <pubDate>0000-00-00 00:00:00</pubDate>
+      <guid>http://pavel.annaeherungsversuch.com/konzerte.php#n3</guid>
+    </item>
+  </channel>
+</rss>

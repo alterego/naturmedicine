@@ -1,0 +1,268 @@
+<?php
+
+class Content
+{
+    //Datenbank-Objekt
+    private $DB = null;
+    
+    //Die aktuell ausgewählte Hauptseite
+    private $SiteName = null;
+    
+    //Die entsprechende Datenbank-Tabelle
+    private $DBTableName = null;
+    
+    //Globales Datenbank-Objekt anbinden
+    public function __construct()
+    {
+        $this->DB = $GLOBALS['DB'];
+    }
+    
+    
+    /**
+     * Auswahl des Inhalts
+     *      
+     * Vorabklärungen für die Datenbankanfrage finden statt.
+     */
+    public function selectContent()
+    {
+        $this->SiteName = basename($_SERVER['PHP_SELF'], '.php');        
+        
+        //Überprüfen, ob es eine Unternavigation für die ausgewählte Seite gibt.
+        if (array_key_exists($this->SiteName, Navi::$SubNaviArray)) {
+          
+            //Wenn eine Unternavigation existiert, überprüfen, ob eine Unterseite ausgewählt ist.
+            if (!isset($_GET['subnav'])) {
+              
+                //Wenn keine Unterseite ausgewählt ist, wird der Inhalt der ersten Seite ausgegeben.               
+                $subNaviArray      = Navi::$SubNaviArray;
+                $this->DBTableName = $subNaviArray[$this->SiteName][0]['sitename'];
+            }
+            else {
+              
+                //Wenn GET-Variable übergeben, wird diese als Datenbanktabellen-Name verwendet.                
+                $this->DBTableName = $_GET['subnav'];
+            }            
+        }
+        else {
+          
+            //Wenn keine Unternavigations existiert, wird der Seitenname (Hauptnavigation) als Datenbanktabelle verwendet.
+            //Wenn die Index-Seite ausgewählt ist, wird der Name 'home' verwendet ('index' ist ein reserviertes Wort in SQL).
+            if ($this->SiteName == 'index') {
+                $this->DBTableName = 'home';
+            }
+            else {
+                $this->DBTableName = $this->SiteName;
+            }
+        }
+    }
+    
+    
+    /**
+     * Ausgabe des Inhalts
+     * 
+     * Die switch-Anweisung überprüft, welche Seite gewählt ist, führt dann die Datenbankanfrage
+     * durch und gibt die Datensätze aus.
+     */
+    public function printContent()
+    {
+        switch ($this->DBTableName) {
+          
+            //Falls die Hauptseite (index)
+            case 'home':                   
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h1>'.nl2br(htmlspecialchars($entry['title'])).'</h1>
+            <p>'.nl2br(htmlspecialchars($entry['text'])).'</p>';
+                    } 
+                }
+                break;
+            
+            //Falls die Seite 'Konzerte'
+            case 'konzerte': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break; 
+               
+            //Falls die Seite 'Programme'                
+            case 'programme': 
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;
+                
+            //Falls die Seite 'Repertoire'                                
+            case 'repertoire':
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;  
+
+                
+            //Falls die Seite 'Tonbeispiele'                                     
+            case 'tonbeispiele': 
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['composer'].'</h1>
+                            <p>'.$entry['piece'].'</p>';
+                    } 
+                } 
+                break;                    
+                        
+            //Falls die Seite 'Bilder'                                        
+            case 'bilder':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                        
+                
+            //Falls die Seite 'Video'                                
+            case 'video':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                 
+                
+            //Falls die Seite 'CD'                                
+            case 'cd':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;  
+                
+            //Falls die Seite 'Reviews'                
+            case 'reviews': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;
+                
+            //Falls die Seite 'Kontakt'                
+            case 'kontakt': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.nl2br(htmlspecialchars($entry['title'])).'</h1>
+                            <p>'.nl2br(htmlspecialchars($entry['text'])).'</p>';
+                    } 
+                } 
+                break;  
+                
+            //Falls die Seite 'Impressum'                
+            case 'impressum': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                                                                                                
+        }
+    }
+  
+}
+
+?>

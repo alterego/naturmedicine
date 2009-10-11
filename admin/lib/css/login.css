@@ -1,0 +1,78 @@
+@charset "utf-8";
+
+/* CSS Document */
+html,body {
+	height: auto;
+	margin: 0 auto;
+	padding: 0;
+}
+
+body {
+	background: #F7F7F7;
+	font-size: 0.7em;
+	font-family: Verdana, Geneva, Arial, Helvetica, sans-serif;
+}
+
+* {
+	margin: 0px;
+	padding: 0px;
+	border: none;
+}
+
+input {
+	border: 1px solid #999;
+	padding: 2px;
+	font-size: 0.9em;
+	width: 160px;
+	font-family: Tahoma, Geneva, sans-serif;
+	overflow: auto;
+}
+
+input[type=submit] {
+	width: 70px;
+	-moz-border-radius: 2px;
+	margin: 10px 2px 0 95px;
+}
+
+#logo {
+	height: 92px;
+	width: 500px;
+	background: url(../../images/logo.png) no-repeat;
+}
+
+#content {
+	position: relative;
+	background: #e6e9ea;
+	width: 498px;
+	height: auto;
+	padding: 30px 0 40px 0;
+	margin: 10% auto 30px auto;
+	-moz-box-shadow: #999 2px 1px 3px;
+	-moz-border-radius: 5px;
+}
+
+#form {
+	position: relative;
+	margin: 0 auto 0 auto;
+	padding: 30px 0 0 0;
+	width: 168px;
+	height: auto;
+	-moz-border-radius: 3px;
+}
+
+input {
+	margin: 2px 0 5px 0;
+}
+
+.m {
+	margin: 2px 0 2px 4px;
+}
+
+.mb {
+	margin-bottom: 5px;
+}
+
+.error {
+	color: #ff3e00;
+	font-weight: bold;
+}

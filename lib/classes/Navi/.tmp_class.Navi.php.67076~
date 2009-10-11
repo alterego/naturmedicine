@@ -1,0 +1,429 @@
+<?php
+
+class Navi
+{
+   
+    /**
+     * Die Hauptnavigations-Links sind in ein Array gesetzt:
+     * Der Schlüssel 'sitename' enthält den internen Bezeichner der Seite.
+     * Der Schlüssel 'linktext' enthält den ausgegebenen Linktext.
+     */
+    private static $MainNaviArray = array(
+                                0 => array(
+                                    'sitename' => "index",
+                                    'linktext' => "About"           
+                                    ),
+                                1 => array(
+                                    'sitename' => "konzerte",
+                                    'linktext' => "Konzerte" 
+                                    ),
+                                2 => array(
+                                    'sitename' => "repertoire",
+                                    'linktext' => "Repertoire"                    
+                                    ),
+                                3 => array(
+                                    'sitename' => "fotos",
+                                    'linktext' => "Fotos"                     
+                                    ),
+                                4 => array(
+                                    'sitename' => "medien",
+                                    'linktext' => "Medien"
+                                    ),
+                                5 => array(
+                                    'sitename' => "projekte",
+                                    'linktext' => "Projekte"
+                                    ),                                    
+                                6 => array(
+                                    'sitename' => "downloads",
+                                    'linktext' => "Downloads"
+                                    ),  
+                                7 => array(
+                                    'sitename' => "kontakt",
+                                    'linktext' => "Kontakt"
+                                    )                                                                        
+                                );  
+    
+    
+    /**
+     * Die Unternavigations-Links sind in ein Array gesetzt:
+     * Für jede Hauptseite existiert darin ein Array mit den entsprechenden Links:
+     * Der Schlüssel 'sitename' enthält den internen Bezeichner der Seite.
+     * Der Schlüssel 'linktext' enthält den ausgegebenen Linktext.
+     */
+    public static $SubNaviArray = array(
+                                'repertoire' => array(
+                                              0 => array(
+                                                  'sitename' => "klassisch",
+                                                  'linktext' => "klassisch"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "chanson",
+                                                  'linktext' => "chanson" 
+                                                  )
+                                              ),
+                                'fotos' => array(
+                                              0 => array(
+                                                  'sitename' => "szenisch",
+                                                  'linktext' => "szenisch"
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "live",
+                                                  'linktext' => "live"
+                                                  )
+                                              ),    
+                                'medien' => array(
+                                              0 => array(
+                                                  'sitename' => "medien_musik",
+                                                  'linktext' => "musik"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "medien_filme",
+                                                  'linktext' => "filme" 
+                                                  )
+                                              ),
+                                'projekte' => array(
+                                              0 => array(
+                                                  'sitename' => "projekte_duo",
+                                                  'linktext' => "duo"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "projekte_publikation",
+                                                  'linktext' => "publikation" 
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "projekte_forschung",
+                                                  'linktext' => "forschung" 
+                                                  )                                                  
+                                              ),                                              
+                                'downloads' => array(
+                                              0 => array(
+                                                  'sitename' => "downloads_tonbeispiele",
+                                                  'linktext' => "tonbeispiele"
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "downloads_fotos",
+                                                  'linktext' => "fotos"
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "downloads_cv",
+                                                  'linktext' => "cv"
+                                                  )                                                  
+                                              )                                              
+                                        );     
+    
+    
+    public static $SubSubNaviArray = array(
+                                'klassisch' => array(
+                                              0 => array(
+                                                  'sitename' => "oper",
+                                                  'linktext' => "oper"
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "rollen",
+                                                  'linktext' => "rollen"
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "geistlich",
+                                                  'linktext' => "geistliche musik"
+                                                  ),
+                                              3 => array(
+                                                  'sitename' => "liedzyklen",
+                                                  'linktext' => "liedzyklen"
+                                                  )                                                                                                     
+                                              ),      
+                                'chanson' => array(
+                                              0 => array(
+                                                  'sitename' => "franzoesisch",
+                                                  'linktext' => "französisch"
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "deutsch",
+                                                  'linktext' => "deutsch"
+                                                  )                                                
+                                              )                                                                                       
+                                        );       
+    
+    /**
+     * Die Footernavigations-Links (wie Impressum, Sitemap etc.) sind in ein Array gesetzt:
+     * Der Schlüssel 'sitename' enthält den internen Bezeichner der Seite.
+     * Der Schlüssel 'linktext' enthält den ausgegebenen Linktext.
+     */                       
+    private static $FooNaviArray = array(                               
+                                0 => array(
+                                    'sitename' => "impressum",
+                                    'linktext' => "impressum"
+                                    ),  
+                                1 => array(
+                                    'sitename' => "sitemap",
+                                    'linktext' => "sitemap"
+                                    ),
+                                2 => array(
+                                    'sitename' => "links",
+                                    'linktext' => "links"
+                                    )                                                                           
+                                );                                   
+
+   /**
+     * Ausgabe der Hauptnavigation
+     *   
+     * Das Array '$MainNaviArray' durchläuft die foreach-Schleife, die überprüft, ob der
+     * jeweilige Link mit der ausgewählten Seite übereinstimmt. Bei positivem Ergebnis wird der
+     * Link als 'selected' markiert und per CSS hervorgehoben.
+     * 
+     * @param string $lastLink:  Der letzte Link der Hauptnavigation
+     */
+    public static function printMainNavi($lastLink)
+    {              
+        
+               echo "\n".'         
+      <div id="navi">
+        <ul>';   
+                    
+        //Wenn nicht eine Seite der Footer-Navigation ausgewählt ist, wird der Hauptnavigations-Link ausgegeben.
+        foreach (self::$MainNaviArray as $naviRow) {
+            if ("impressum" !== basename($_SERVER['PHP_SELF'],".php") or
+                "sitemap"   !== basename($_SERVER['PHP_SELF'],".php") or 
+                "links"     !== basename($_SERVER['PHP_SELF'],".php")) {        
+                  
+                //Wenn keine Unternavigation existiert.
+                if (!array_key_exists($naviRow['sitename'], self::$SubNaviArray)) {
+                    if ($naviRow['sitename'] !== 'kontakt') {
+                        echo '
+          <li class="norm">';
+                    } 
+                    else {
+                        echo '
+          <li>';
+                    }  
+                                   
+                    //Wenn die Seite nicht ausgewählt ist.
+                    if ($naviRow['sitename'] !== basename($_SERVER['PHP_SELF'],".php")) {
+                        echo '<a href="'.$naviRow['sitename'].'.php">'.$naviRow['linktext'].'</a></li>';                 
+                    }
+                    
+                    //Wenn die Seite ausgewählt ist.
+                    else {
+                        echo '<a class="selected">'.$naviRow['linktext'].'</a></li>';
+                    }
+                }            
+            
+                //Wenn eine Unternavigation existiert. 
+                else {
+                  
+                   //Inhalt der GET-Variable überprüfen
+                    if (isset($_GET['subnav'])) {
+                        Security::checkWhitelistGET($_GET['subnav'], 'subnav'); 
+                    }                      
+                    
+                    if ($naviRow['sitename'] !== 'kontakt') {
+                        echo '
+          <li class="norm">';
+                    } 
+                    else {
+                        echo '
+          <li>';
+                    }                     
+                    
+                    //Wenn die Seite nicht ausgewählt ist.
+                    if ($naviRow['sitename'] !== basename($_SERVER['PHP_SELF'],".php")) {
+                        echo '<a>'.$naviRow['linktext'].'</a>
+            <ul>';                 
+                    }
+                    
+                    //Wenn die Seite ausgewählt ist.
+                    else {
+                        echo '<a class="selected">'.$naviRow['linktext'].'</a>
+            <ul>';
+                    }                                                            
+                    
+                    //Die jeweilige Hauptseite speichern, um sie bei den Unternavigationslinks einsetzen zu können. 
+                    //(wird später überschrieben)
+                    $mainSite = $naviRow['sitename'].'.php';                                                                             
+                        
+                    //Jeder Unternavigations-Link wird abgeklärt.
+                    foreach (self::$SubNaviArray[$naviRow['sitename']] as $subnaviRow) {                         
+                            
+                        //Wenn keine Unternavigation der Unternavigation existiert.
+                        if (!array_key_exists($subnaviRow['sitename'], self::$SubSubNaviArray)) {
+
+                            //Wenn die Seite ausgewählt ist.
+                            if (isset($_GET['subnav']) AND $subnaviRow['sitename'] == $_GET['subnav']) {                                                 
+                                        
+                                echo '
+              <li><a class="selected">'.$subnaviRow['linktext'].'</a></li>';
+                            }
+                            
+                            //Wenn die Seite nicht ausgewählt ist.
+                            else {
+                                echo '
+              <li><a href="'.$mainSite.'?subnav='.$subnaviRow['sitename'].'">'.$subnaviRow['linktext'].'</a></li>';
+                            }                            
+                        }
+                        
+                        //Wenn eine Unternavigation der Unternavigation existiert.
+                        else {           
+                                                 
+                           //Inhalt der GET-Variable überprüfen
+                            if (isset($_GET['subsubnav'])) {
+                                Security::checkWhitelistGET($_GET['subsubnav'], 'subnav'); 
+                            }                            
+                           
+                            //Wenn die Seite ausgewählt ist.
+                            if (isset($_GET['subnav']) AND $subnaviRow['sitename'] == $_GET['subnav']) {                                                 
+                                echo '
+              <li class="selected"><a class="selected">'.$subnaviRow['linktext'].'</a>
+                <ul>';                                                                                                       
+                            }
+                            
+                            //Wenn die Seite nicht ausgewählt ist.
+                            else {
+                                echo '
+              <li><a>'.$subnaviRow['linktext'].'</a>
+                <ul>';
+                            }
+                                                        
+                            //Jeder Unternavigations-Link der Unternavigation wird abgeklärt, ob er ausgewählt ist.
+                            foreach (self::$SubSubNaviArray[$subnaviRow['sitename']] as $subsubnaviRow) {   
+                                
+                                //Wenn die Seite ausgewählt ist.
+                                if (isset($_GET['subsubnav']) AND $subsubnaviRow['sitename'] == $_GET['subsubnav']) {                                                 
+                                    echo '
+                  <li class="selected"><a class="selected">'.$subsubnaviRow['linktext'].'</a></li>';
+                                } 
+                                
+                                //Wenn die Seite nicht ausgewählt ist.
+                                else {
+                                    echo '
+                  <li><a href="'.$mainSite.'?subnav='.$subnaviRow['sitename'].'&subsubnav='.$subsubnaviRow['sitename'].'">'.$subsubnaviRow['linktext'].'</a></li>';
+                                }
+                            }
+                            
+                            //Schliessen des "ul" und "li" der Unternavigations-Links der Unternavigation.                            
+                            echo '
+                </ul>
+              </li>';
+                        }
+                    }
+                    
+                    //Schliessen des "ul" und "li" der Unternavigations-Links.                            
+                    echo '
+            </ul>
+          </li>';                
+               }                          
+           }
+        }
+                                    
+        //Abschluss des Divs 'navi'
+        echo '
+        </ul> 
+      </div>';                     
+    }
+
+    
+    
+   /**
+     * Ausgabe der Unternavigation
+     *   
+     * Das Array '$SubNaviArray' durchläuft die foreach-Schleife, die überprüft, ob der
+     * jeweilige Link mit der ausgewählten Seite übereinstimmt. Bei positivem Ergebnis wird der
+     * Link als 'selected' markiert und per CSS hervorgehoben.
+     * 
+     */    
+//    public static function printSubNavi()
+//    {
+//        echo '
+//          <div id="text">';
+//       
+//        //Überprüfen, ob eine Unternavigation für die ausgewählte Seite existiert.
+//        if (array_key_exists(basename($_SERVER['PHP_SELF'], ".php"), self::$SubNaviArray)) {
+//          
+//            //Inhalt der GET-Variable überprüfen
+//            if (isset($_GET['subnav'])) {
+//                Security::checkWhitelistGET($_GET['subnav'], 'subnav'); 
+//            }
+//            
+//            //Wenn ja, wird die Unternavigation ausgegeben.
+//            echo '
+//            <div id="subnavi">';
+//            
+//            //Beim ersten Eintreten einer Hauptseite (keine GET-Info) wird der GET-Parameter 'subnav' auf
+//            //den ersten Unternavigations-Link gesetzt, um ihn als ausgewählt zu markieren.
+//            if (!isset($_GET['subnav'])) {
+//                $_GET['subnav'] = self::$SubNaviArray[basename($_SERVER['PHP_SELF'],".php")][0]['sitename'];
+//            }
+//            
+//            //Das der Hauptseite entsprechende Array wird rückwärts durchlaufen, um auf den letzten Wert des
+//            //Arrays zugreifen zu können. Dieser wird in der Variable $lastLink gespeichert, um später
+//            //die Ausgabe der vertikalen Trennstriche kontrollieren zu können.
+//            $arrRev   = array_reverse(self::$SubNaviArray[basename($_SERVER['PHP_SELF'],".php")]);
+//            $lastLink = $arrRev[0]['sitename'];
+//            
+//            //Stimmt die GET-Variable 'subnav' mit dem Array-Wert 'sitename' überein, wird der Link
+//            //als selected markiert, da die entsprechende Seite ausgewählt ist.
+//            foreach (self::$SubNaviArray[basename($_SERVER['PHP_SELF'],".php")] as $naviRow) {       
+//                if ($naviRow['sitename'] !== $_GET['subnav']) {
+//                    echo '
+//                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']).'?subnav='.$naviRow['sitename'].'">'.$naviRow['linktext'].'</a>';
+//                }
+//                else {
+//                    echo '
+//                <a class="selected">'.$naviRow['linktext'].'</a>';
+//                }
+//                if ($naviRow['sitename'] !== $lastLink) {
+//                   echo '<div class="navi_vert_line"></div>';
+//                }
+//        }
+//        
+//        //Abschluss des Divs 'subnavi'.
+//        echo '
+//            </div>'."\n\n".'';       
+//        }        
+//    }   
+//    
+    
+   /**
+     * Ausgabe der Footernavigation
+     *   
+     * Das Array '$FooNaviArray' durchläuft die foreach-Schleife, die überprüft, ob der
+     * jeweilige Link mit der ausgewählten Seite übereinstimmt. Bei positivem Ergebnis wird der
+     * Link als 'selected' markiert und per CSS hervorgehoben.
+     * 
+     */    
+    public static function printFooNavi()
+    {
+        echo '
+        <div id="footer">
+          <div class="left">&copy; Julia Schiwowa ';
+                
+           
+        //Jahreszahlen für copyright dynamisch generieren
+        $startYear = "2009";
+        if($startYear < date("Y")) {
+            echo $startYear, date(" - Y");
+        }
+        else {
+            echo $startYear;
+        }      
+        echo '
+        </div> 
+        <div class="right">';        
+        
+        //Ausgabe der einzelnen Links mittels Array $FooNaviArray.                                               
+        foreach (self::$FooNaviArray as $naviRow) {
+            if ($naviRow['sitename'] !== basename($_SERVER['PHP_SELF'], '.php')) {
+                echo '<a href="'.$naviRow['sitename'].'.php">'.$naviRow['linktext'].'</a>';         
+            }        
+            else {
+                echo '<a class="selected">'.$naviRow['linktext'].'</a>';               
+            }
+            if ($naviRow['sitename'] !== 'links') {
+                echo '&nbsp;&nbsp;|&nbsp;&nbsp;';
+            }              
+        }
+        echo '
+        </div>';
+    }
+    
+}    
+
+?>

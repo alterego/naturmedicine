@@ -1,0 +1,460 @@
+<?php
+
+class Content
+{
+    //Datenbank-Objekt
+    private $DB = null;
+    
+    //Die aktuell ausgewählte Hauptseite
+    private $SiteName = null;
+    
+    //Die entsprechende Datenbank-Tabelle
+    private $DBTableName = null;
+    
+    //Globales Datenbank-Objekt anbinden
+    public function __construct()
+    {
+        $this->DB = $GLOBALS['DB'];
+    }
+    
+    
+    /**
+     * Auswahl des Inhalts
+     *      
+     * Vorabklärungen für die Datenbankanfrage finden statt.
+     */
+    public function selectContent()
+    {
+        $this->SiteName = basename($_SERVER['PHP_SELF'], '.php');                                  
+               
+        //Wenn eine Unternavigation existiert, überprüfen, ob eine Unterseite ausgewählt ist.
+        if (isset($_GET['subnav']) AND !empty($_GET['subnav'])) {
+          
+            //Wenn GET-Variable übergeben, wird diese als Datenbanktabellen-Name verwendet.                
+            $this->DBTableName = $_GET['subnav'];
+            
+            //Wenn eine Unternavigation der Unternavigation existiert, überprüfen, ob eine Unterseite ausgewählt ist.
+            if (isset($_GET['subsubnav']) AND !empty($_GET['subsubnav'])) {
+              
+                //Wenn GET-Variable übergeben, wird diese als Datenbanktabellen-Name verwendet.                
+                $this->DBTableName = $_GET['subsubnav'];
+            }              
+        }                                
+        
+        //Wenn keine Unternavigation existiert.
+        else {
+          
+            //Wenn keine Unternavigation existiert, wird der Seitenname (Hauptnavigation) als Datenbanktabelle verwendet.
+            //Wenn die Index-Seite ausgewählt ist, wird der Name 'home' verwendet ('index' ist ein reserviertes Wort in SQL).
+            if ($this->SiteName == 'index') {
+                $this->DBTableName = 'home';
+            }
+            else {
+                $this->DBTableName = $this->SiteName;
+            }
+        }
+    }
+    
+    
+    /**
+     * Ausgabe des Inhalts
+     * 
+     * Die switch-Anweisung überprüft, welche Seite gewählt ist, führt dann die Datenbankanfrage
+     * durch und gibt die Datensätze aus.
+     */
+    public function printContent()
+    {
+        echo '
+      <div id="content">'."\n".''; 
+        
+        //Reihenfolge der Dateneinträge festlegen (Alle ausser 'Konzerte' werden nach 'sort_id' sortiert.)
+        if ($this->DBTableName == 'konzerte') {
+            
+            //Nur diejenigen Konzerteinträge auswählen, die nicht in der Vergangenheit liegen.
+            $sql    = "SELECT * FROM ".$this->DBTableName." WHERE timestamp > '".date('Y-m-d H:i:s')."' ORDER BY timestamp";
+        }
+        else {
+                  
+            //Unveränderte Datenbankabfrage
+            $sql    = "SELECT * FROM ".$this->DBTableName." ORDER BY sort_id";
+        }
+        $result = $this->DB->query($sql, false);
+       
+        //Wenn kein Datenbankeintrag vorhanden ist, wird eine Meldung ausgegeben.
+        if ($result->num_rows == 0) {
+            if ( $this->DBTableName !== 'konzerte') {
+                echo '
+			<div id="columne_l">	
+            <div class="kein_eintrag">
+              <p>Es sind keine Einträge vorhanden.</p>
+            </div>
+            </div>
+			<div id="columne_r">';
+            }
+            else {
+                echo '
+            <div class="kein_eintrag"><p>Zur Zeit sind keine Einträge vorhanden.<br /><br />
+              Möchten Sie unkompliziert über die kommenden Konzerte informiert werden, können Sie den <a class="bold" href="'.URL_RSS_KONZERTE.'">&#8594; RSS-Feed</a> abonnieren.</p>
+            </div>';              
+            }
+        }
+        else {        
+            //Die Einträge ausgeben                           
+            switch ($this->DBTableName) {
+          
+                //Falls die Hauptseite (index)
+                case 'home':                   
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+			<div id="columne_l">
+			<h1>'.nl2br($entry['title']).'</h1>'.
+              '<p>'.nl2br($entry['text']).'</p>';
+                    } 
+                
+                break;
+            
+                //Falls die Seite 'Konzerte'
+                case 'konzerte': 
+                    echo '
+            <div id="columne_l">
+			 <h1>Die nächsten Auftritte</h1> 
+              <div class="strich_extra"></div>';                                
+                      while($entry = $result->fetch_assoc()) {
+                          echo '
+              <div class="eintrag" id="n'.$entry['id'].'">
+			 <div class="ort_p">'.$entry['location'].'</div>            
+                  <div class="konzert_box">
+                  '.$entry['date'].', '.$entry['time'].'<br />';
+                            
+                            //Wenn ein Link in der Datenbank vorhanden ist, wird er ausgegeben.
+                            if ($entry['link'] == '') {
+                                echo '
+                    '.$entry['place'];
+                            }
+                            else {
+                                echo '
+                    <a href="'.$entry['link'].'">'.$entry['place'].'</a>';
+                            }
+                            echo '
+                    <'.p>nl2br($entry['program']).'</p>
+                </div>
+			   <div class="strich_l"></div>
+              </div>';                    
+                    }
+                
+                break; 
+               
+                //Falls die Seite 'Oper'                
+                case 'oper': 
+                
+                    echo '				
+            
+       		<div id="columne_l">
+            <h1>Oper</h1>
+			<div class="strich_extra"></div>';                                
+
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;
+                
+                //Falls die Seite 'Rollen'                
+                case 'rollen': 
+               
+                    echo '					
+			<div id="columne_l">
+            <h1>Rollen</h1>
+			<div class="strich_extra"></div>';                     
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                    
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;                
+                
+                //Falls die Seite 'Geistliche Musik'                                
+                case 'geistlich':                
+                    
+                    echo '				
+			<div id="columne_l">
+            <h1>Geistliche Musik</h1>
+			<div class="strich_extra"></div>';   
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;
+
+                
+                //Falls die Seite 'Liedzyklen'                                     
+                case 'liedzyklen': 
+
+                    echo '					
+			<div id="columne_l">
+            <h1>Liedzyklen</h1>
+			<div class="strich_extra"></div>';   
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;
+                
+                //Falls die Seite 'französisch'                                
+                case 'franzoesisch':                    
+                        
+                    echo '<div id="columne_l">
+						  <h1>Chansons francaise</h1>
+						  <div class="strich_extra"></div>';                                
+ 
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;                       
+                
+                //Falls die Seite 'deutsch'                                
+                case 'deutsch':                         
+                                                     
+                    echo '					
+			    <div id="columne_l">
+            	<h1>Deutsche Chansons</h1>
+				<div class="strich_extra"></div>'; 
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">
+			<div class="komponist">'.$entry['composer'].'</div><div class="werke">'.nl2br($entry['pieces']).'</div>
+            </div>';
+                    } 
+                
+                break;                
+                
+                //Falls die Seite 'szenisch'                                
+                case 'szenisch':                         
+                
+                    echo '
+                <div id="columne_l">
+	            <h1>Szenische Aufnahmen</h1>
+				<div class="strich_extra"></div>'; 
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="thumbnail">
+              <a href="'.$entry['filepath'].'" rel="lightbox[galerie]"><img src="'.$entry['thumbnailpath'].'" /></a>
+            </div>';
+                    } 
+                    
+                
+                break;  
+                
+                //Falls die Seite 'live'                
+                case 'live':  
+             
+                    echo '
+           <div id="columne_l">
+            <h1>Live Fotos</h1>
+			<div class="strich_extra"></div>'; 
+			
+               
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+             <div class="thumbnail">
+              <a href="'.$entry['filepath'].'" rel="lightbox[galerie]"><img src="'.$entry['thumbnailpath'].'" /></a>
+             </div>';
+                    } 
+                    
+                
+                break; 
+                
+                //Falls die Seite 'Medien - Musik'                
+                case 'medien_musik': 
+               echo'
+		   <div id="columne_l">		   
+		   <h1>Muskbeispiele</h1>
+		   <div class="strich_extra"></div>';                                
+               
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <object type="application/x-shockwave-flash" data="dewplayer.swf?mp3='.$entry['filepath'].'.mp3" width="200" height="20">
+            <param name="movie" value="dewplayer.swf?mp3='.$entry['filepath'].'.mp3" />
+            </object><br /><br />';
+                    } 
+                 
+                break; 
+                
+                //Falls die Seite 'Medien - Film'                
+                case 'medien_filme': 
+                    
+                    echo'
+    		   <div id="columne_l">
+               <h1>Filme</h1>
+    		   <div class="strich_extra"></div>';                                
+               
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>                            
+                            <a class="videoplayer" href="'.$entry['filepath'].'"> 
+                            </a>                       
+                            <p>'.$entry['description'].'</p>';
+                    } 
+                    
+                    //Einmaliges Einbinden des Players mit Referenz auf die CSS-Klasse 'videoplayer'.
+                    echo '
+                            <script language="JavaScript">
+                              flowplayer("a.videoplayer", "lib/js/flowplayer-3.1.1.swf", {
+                                  clip: {          
+                                  autoPlay: false,
+                                  autoBuffering: true 
+                                  }
+                              }); 
+                            </script>';                       
+                 
+                break;  
+                
+                //Falls die Seite 'Downloads - Tonbeispiele'                
+                case 'downloads_tonbeispiele': 
+               
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <object type="application/x-shockwave-flash" data="dewplayer.swf?mp3='.$entry['filepath'].'.mp3" width="200" height="20">
+            <param name="movie" value="dewplayer.swf?mp3='.$entry['filepath'].'.mp3" />
+            </object><br /><br />';
+                    } 
+                 
+                break; 
+                
+                //Falls die Seite 'Downloads - Fotos'                
+                case 'downloads_fotos': 
+               echo'
+			<div id="columne_l">			
+			<h1>Fotos zum herunterladen</h1>
+			<div class="strich_extra"></div>';                                
+               
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="thumbnail">
+              <a href="'.$entry['filepath'].'" rel="lightbox[galerie]"><img src="'.$entry['thumbnailpath'].'" /></a>
+            </div>';
+                    } 
+                    
+                
+                break;  
+                
+                //Falls die Seite 'Downloads - CV'                
+                case 'downloads_cv': 
+               echo'			   			  
+			   <div id="columne_l">
+			   <h1>Curiculum Vitae zum herunterladen</h1>
+			   <div class="strich_extra"></div>';                                
+
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h3>'.nl2br($entry['title']).'</h3>
+            <p>'.nl2br($entry['description']).'<br />'."\n".'';
+                    } 
+                 
+                break;                                                                               
+                
+                //Falls die Seite 'Kontakt'                
+                case 'kontakt': 
+                echo'
+			<div id="columne_l">';
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h1>'.nl2br($entry['title']).'</h1>
+            <p>'.nl2br($entry['text']).'<br />'."\n".
+            Email::crypteEmail(FORM_EMAIL).'</p>';
+                    } 
+                 
+                break;  
+                
+                //Falls die Seite 'Impressum'                
+                case 'impressum': 
+               echo'
+			<div id="columne_l">';                
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                 
+                break;
+                
+                //Falls die Seite 'Sitemap'                
+                case 'sitemap': 
+               echo'
+			<div id="columne_l">';
+                
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                 
+                break;
+                
+                //Falls die Seite 'Links'                
+                case 'links': 
+               echo'
+			<div id="columne_l">';
+                
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['linktext'].'</h1>
+                            <p>'.$entry['hyperlink'].'</p>';
+                    } 
+                 
+                break;                                
+            }
+            
+            //Zitat-Ausgabe
+            echo '
+            </div>
+			
+            <div id="columne_r">
+              <div id="zitat">
+                <p>"Ich habe keine Lust, eine Kunst auszuüben, wo man sein Gehirn an der Garderobe abgeben muss"</p><p class="r">Hanns Eisler</p>
+              </div>';
+        }          
+    }
+  
+}
+
+?>

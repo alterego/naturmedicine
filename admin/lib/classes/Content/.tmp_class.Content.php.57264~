@@ -1,0 +1,372 @@
+<?php
+
+class Content
+{
+    //Datenbank-Objekt
+    private $DB = null;
+    
+    //Die aktuell ausgewählte Hauptseite
+    private $SiteName = null;
+    
+    //Die entsprechende Datenbank-Tabelle
+    private $DBTableName = null;
+    
+    //Globales Datenbank-Objekt anbinden
+    public function __construct()
+    {
+        $this->DB = $GLOBALS['DB'];
+    }
+    
+    
+    /**
+     * Auswahl des Inhalts
+     *      
+     * Vorabklärungen für die Datenbankanfrage finden statt.
+     */
+    public function selectContent()
+    {
+        $this->SiteName = basename($_SERVER['PHP_SELF'], '.php');        
+        
+        //Überprüfen, ob es eine Unternavigation für die ausgewählte Seite gibt.
+        if (array_key_exists($this->SiteName, Navi::$SubNaviArray)) {
+          
+            //Wenn eine Unternavigation existiert, überprüfen, ob eine Unterseite ausgewählt ist.
+            if (!isset($_GET['subnav'])) {
+              
+                //Wenn keine Unterseite ausgewählt ist, wird der Inhalt der ersten Seite ausgegeben.               
+                $subNaviArray      = Navi::$SubNaviArray;
+                $this->DBTableName = $subNaviArray[$this->SiteName][0]['sitename'];
+            }
+            else {
+              
+                //Wenn GET-Variable übergeben, wird diese als Datenbanktabellen-Name verwendet.                
+                $this->DBTableName = $_GET['subnav'];
+            }            
+        }
+        else {
+          
+            //Wenn keine Unternavigations existiert, wird der Seitenname (Hauptnavigation) als Datenbanktabelle verwendet.
+            //Wenn die Index-Seite ausgewählt ist, wird der Name 'home' verwendet ('index' ist ein reserviertes Wort in SQL).
+            if ($this->SiteName == 'index') {
+                $this->DBTableName = 'home';
+            }
+            else {
+                $this->DBTableName = $this->SiteName;
+            }
+        }
+    }
+    
+    
+    /**
+     * Ausgabe des Inhalts
+     * 
+     * Die switch-Anweisung überprüft, welche Seite gewählt ist, führt dann die Datenbankanfrage
+     * durch und gibt die Datensätze aus.
+     */
+    public function printContent()
+    {
+        switch ($this->DBTableName) {
+          
+            //Falls die Hauptseite (index)
+            case 'home':                   
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h1>'.nl2br(htmlspecialchars($entry['title'])).'</h1>
+            <p>'.nl2br(htmlspecialchars($entry['text'])).'</p>';
+                    } 
+                }
+                break;
+            
+            //Falls die Seite 'Konzerte'
+            case 'konzerte': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                echo '
+            <h1 class="left">Die nächsten Auftritte</h1> 
+            <div class="strich_extra"></div>';
+                
+                //Wenn keine Einträge vorhanden Alternativ-Inhalt ausgeben
+                if ($result->num_rows == 0) {
+                    echo '<div class="kein_eintrag"><p>Zur Zeit sind keine Einträge vorhanden.<br /><br />
+                          Möchten Sie unkompliziert über die kommenden Konzerte informiert werden, können Sie den <a class="bold" href="'.URL_RSS_KONZERTE.'">&#8594; RSS-Feed</a> abonnieren.</p>
+                          </div>';
+                }
+                else {
+                  
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag" id="n'.$entry['id'].'">
+              <div class="ort_p">'.$entry['location'].'</div>
+                <div class="konzert_box">
+                <div class="time_p">'.$entry['date'].', '.$entry['time'].'<br />';
+                          
+                          //Wenn ein Link in der Datenbank vorhanden ist, wird er ausgegeben.
+                          if ($entry['link'] == '') {
+                              echo '
+                  '.$entry['place'];
+                          }
+                          else {
+                              echo '
+                  <a href="'.$entry['link'].'">'.$entry['place'].'</a>';
+                          }
+                          echo '
+                </div>
+                  <p class="programm">'.nl2br(htmlspecialchars($entry['program'])).'</p>
+              </div>
+            </div>
+            <div class="strich_l"></div>';                    
+                    }
+                }
+                break; 
+               
+            //Falls die Seite 'Rezitalprogramme'                
+            case 'rezitalprogramme': 
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                                      
+                    //Nummerierung mit römischen Ziffern, die automatisch generiert werden.
+                    $i = '2160';
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h2>&#x'.$i.';. '.$entry['title'].'</h2>
+            <div class="programme">';
+                        
+                        //Römische Ziffer wird um eins erhöht.
+                        ++$i;
+                        
+                        //For-Schleife, die alle vorhandenen Komponisten mit den entsprechenden Stücken ausgibt.
+                        for ($s = '1'; $entry['composer'.$s.''] !== null; ++$s) {                        
+                            echo '
+              <div class="komp">'.$entry['composer'.$s].'</div><div class="werk">'.$entry['piece'.$s].'</div>';
+                        }
+                        echo '
+            </div>
+            <div class="strich_p"></div>';
+                    } 
+                } 
+                break;
+                
+            //Falls die Seite 'Kammermusikprogramme'                
+            case 'kammermusikprogramme': 
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                                      
+                    //Nummerierung mit römischen Ziffern, die automatisch generiert werden.
+                    $i = '2160';
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h2>&#x'.$i.';. '.$entry['title'].'</h2>
+            <div class="programme">';
+                        
+                        //Römische Ziffer wird um eins erhöht.
+                        ++$i;
+                        
+                        //For-Schleife, die alle vorhandenen Komponisten mit den entsprechenden Stücken ausgibt.
+                        for ($s = '1'; $entry['composer'.$s.''] !== null; ++$s) {                        
+                            echo '
+              <div class="komp">'.$entry['composer'.$s].'</div><div class="werk">'.$entry['piece'.$s].'</div>';
+                        }
+                        echo '
+            </div>
+            <div class="strich_p"></div>';
+                    } 
+                } 
+                break;                
+                
+            //Falls die Seite 'Orchesterrepetoire'                                
+            case 'orchesterrepetoire':
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                                      
+                    //Nummerierung mit römischen Ziffern, die automatisch generiert werden.
+                    $i = '2160';
+                    
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h2>&#x'.$i.';. '.$entry['title'].'</h2>
+            <div class="programme">';
+                        
+                        //Römische Ziffer wird um eins erhöht.
+                        ++$i;
+                        
+                        //For-Schleife, die alle vorhandenen Komponisten mit den entsprechenden Stücken ausgibt.
+                        for ($s = '1'; $entry['composer'.$s.''] !== null; ++$s) {                        
+                            echo '
+              <div class="komp">'.$entry['composer'.$s].'</div><div class="werk">'.$entry['piece'.$s].'</div>';
+                        }
+                        echo '
+            </div>
+            <div class="strich_p"></div>';
+                    } 
+                } 
+                break; 
+
+                
+            //Falls die Seite 'Tonbeispiele'                                     
+            case 'tonbeispiele': 
+
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <object type="application/x-shockwave-flash" data="dewplayer.swf?mp3='.$entry['file'].'.mp3" width="200" height="20">
+            <param name="movie" value="dewplayer.swf?mp3='.$entry['file'].'.mp3" />
+            </object><br /><br />';
+                    } 
+                } 
+                break;                    
+                        
+            //Falls die Seite 'Bilder'                                        
+            case 'bilder':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                        
+                
+            //Falls die Seite 'Video'                                
+            case 'video':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                 
+                
+            //Falls die Seite 'CD'                                
+            case 'cd':                         
+                
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;  
+                
+            //Falls die Seite 'Reviews'                
+            case 'reviews': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                echo '
+            <h1 class="left">Kritische Berichte</h1> 
+            <div class="strich_extra"></div>';
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <div class="eintrag">                        
+              <div class="zeitung">'.$entry['name'].'<br />
+                '.$entry['date'].'
+                <p class="kritik">'.nl2br(htmlspecialchars($entry['excerpt'])).'</p>
+              </div>
+              <div class="foto"><img src="'.$entry['image'].'" /></div>
+              <div class="cleaner"></div>
+            </div>
+            <div class="strich_extra"></div>';
+                    } 
+                } 
+                break;
+                
+            //Falls die Seite 'Kontakt'                
+            case 'kontakt': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+            <h1 class="left">'.nl2br(htmlspecialchars($entry['title'])).'</h1>
+            <p class="left">'.nl2br(htmlspecialchars($entry['text'])).'<br />'."\n".
+            Email::crypteEmail(FORM_EMAIL).'</p>';
+                    } 
+                } 
+                break;  
+                
+            //Falls die Seite 'Impressum'                
+            case 'impressum': 
+                $sql    = "SELECT * FROM ".$this->DBTableName."";
+                $result = $this->DB->query($sql, false);
+                if ($result->num_rows == 0) {
+                    echo 'Es sind keine aktuellen Einträge vorhanden.';
+                }
+                else {
+                    //Die Einträge ausgeben
+                    while($entry = $result->fetch_assoc()) {
+                        echo '
+                            <h1>'.$entry['title'].'</h1>
+                            <p>'.$entry['text'].'</p>';
+                    } 
+                } 
+                break;                                                                                                
+        }
+    }
+  
+}
+
+?>

@@ -1,0 +1,70 @@
+<?php
+
+class Login
+{
+  private $DB = null;
+    
+    
+    public function __construct()
+    {
+        $this->DB = $GLOBALS['DB'];
+    }
+    
+    public function printLoginForm($checkScript = null)
+    {
+          //Wenn der Benutzer nicht authentifiziert wurde, wird eine Fehlermeldung ausgegeben.
+          if (!isset($_GET['login'])) {
+              $_GET['login'] = '';
+          }         
+          if ($_GET['login'] == 'failed') {
+              echo '
+          <p>Fehler!</p>
+          <p>Die Authentifizierung hat fehlgeschlagen. Benutzername oder Passwort ist nicht korrekt.</p>';
+          }
+          echo '          
+          <form action="'.$checkScript.'" method="post">
+            Login:<br />
+            <input type="text" name="login" size="30" maxLength="100"><br />
+            Passwort:<br />
+            <input type="password" name="password" size="30" maxLength="100"><br />
+            <input type="submit" name="doLogin" value="anmelden">
+          </form>';
+    }
+  
+    public function checkLoginData($salt)
+    {
+        //Keine direkte Abfrage in der Datenbank (Erste Angriffsstelle)
+        //Das erste Zeichen der Eingabe verwenden, um eine eingeschränkte Ergebnismenge zu erhalten.
+        $firstChar = substr($_POST['login'], 0, 1);
+        
+        //Ergebnismenge aus der Datenbank holen
+        $sql    = "SELECT login, password FROM user WHERE login LIKE '".$firstChar."%'";
+        $result = $this->DB->query($sql);        
+        
+        //Nur die ersten 100 Zeichen der Eingabe verwenden (Buffer Overflow)
+        $login    = trim(substr($_POST['login'], 0, 100));
+        $password = trim(substr($_POST['password'], 0, 100));
+                
+        while ($data = $result->fetch_assoc()) {        
+           
+            //Benutzer ist authentifiziert
+            if ($login == $data['login'] AND hash('sha256', $password.$salt) == $data['password']) {
+                
+                //Session_id neu setzen (Session-Fixation)
+                session_regenerate_id();
+                
+                //Session-Daten speichern
+                $_SESSION['username']      = $login;
+                $_SESSION['loggedInSince'] = date('d.m.Y H:i', time());
+                
+                return true;
+            }                            
+        } 
+        
+        //Benutzer nicht authentifiziert
+        return false;                
+    }
+  
+}
+
+?>

@@ -1,0 +1,23 @@
+RewriteEngine on
+
+Options +FollowSymLinks
+
+RewriteBase /naturmedicine/
+
+#Bild- und weiter Mediapfade, sowie die eingebundenen CSS- und JS-Dateien werden belassen.
+RewriteRule ^.+\.(gif|jpg|jpeg|png|css|js|mp3|swf|flv)$ - [NC,L]
+
+#Die bare Domain-URL wird auf den Inhalt 'home' umgeleitet.
+RewriteRule ^$ index.php?sitename=home [L]
+
+#Die Startseite wird als bare Domain-URL ausgegeben (Redirect).
+RewriteRule ^home/$ http://localhost/naturmedicine/ [R,L]
+
+#Der Seiteninhalt wird ermittelt und in GET-Variablen geschrieben (bis Unter-Unternavigation).
+RewriteRule ^([^/]+)/([^/]+)/([^/]+)/?$ index.php?sitename=$1&subnav=$2&subsubnav=$3 [L]
+
+#Der Seiteninhalt wird ermittelt und in GET-Variablen geschrieben (bis Unternavigation).
+RewriteRule ^([^/]+)/([^/]+)/?$ index.php?sitename=$1&subnav=$2 [L]
+
+#Der Seiteninhalt wird ermittelt und in GET-Variablen geschrieben (nur Hauptinhalt).
+RewriteRule ^([^/]+)/$ index.php?sitename=$1 [L]

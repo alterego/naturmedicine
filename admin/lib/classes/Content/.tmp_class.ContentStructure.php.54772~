@@ -1,0 +1,52 @@
+<?php
+
+class ContentStructure 
+{       
+   
+    private $DBTable = null;
+    
+    
+    public static function printStructure()
+    {
+        echo '
+            <div id="overview">
+              <h2>Übersicht</h2>';
+              
+        $Content = new Content();
+        
+        $Content->selectContent();
+        self::DBTable = $Content->DBTableName;
+              
+        self::printOverview();
+              
+        echo '
+            </div>
+            <div id="form_new_entry">
+              <h2>Neuer Eintrag</h2>            
+            </div>';
+    }
+    
+    
+    private static function printOverview()
+    {
+        $DB = $GLOBALS['DB'];
+        
+        echo '
+            <div class="overview_row">';
+        
+        $sql = "SELECT * FROM ".self::DBTable."";
+        $result = $DB->query($sql);
+        
+        while ($entry = $result->fetch_assoc()) {
+            echo '
+            <p>'.$entry['location'].' | '.$entry['date'].' / '.$entry['time']'</p>';
+        }
+        
+        
+        echo '
+            </div>';
+    }
+    
+}
+
+?>

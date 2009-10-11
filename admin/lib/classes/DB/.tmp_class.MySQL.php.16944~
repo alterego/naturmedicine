@@ -1,0 +1,70 @@
+<?php
+
+class MySQL
+{
+  
+  	//Datenbankverbindungsobjekt 
+  	public $MySQLiObj = null;
+  
+  	//Letzte SQL-Abfrage
+  	public $lastSQLQuery = null;
+  
+  	//Status der letzten Anfrage 
+  	public $lastSQLStatus = null;
+  
+    public function __construct($server, $user, $password, $db)
+    {
+        $this->MySQLiObj = new mysqli($server, $user, $password, $db);
+        if (mysqli_connect_errno()) {
+            echo "Konnte keine Verbindung zum Datenbank-Server herstellen.";
+            trigger_error("MySQL-Connection-Error", E_USER_ERROR);
+            die();
+        }
+        $this->MySQLiObj->query("SET NAMES utf8");
+    }
+    
+    public function __destruct()
+    {
+        $this->MySQLiObj->close();
+    }
+
+    
+    public function query($sqlQuery)
+    {
+        $this->lastSQLQuery = $sqlQuery;
+        $this->doLog($sqlQuery);
+        $result = $this->MySQLiObj->query($sqlQuery);
+        if ($result === false) {
+            $this->lastSQLStatus = false;
+            echo 'Es konnten keine Daten ausgelesen werden.';                                        
+        }
+        if ($result->num_rows == 0) {
+            $this->lastSQLStatus = true;   
+            echo 'Es wurden keine passenden Einträge gefunden.';            
+        }
+        return $result;
+    }
+
+    
+    public function lastSQLError()
+    {
+        return $this->MySQLiObj->error;
+    }
+    
+    
+    private function doLog($sqlQuery) {
+        //Datei zum Schreiben bestimmen
+        $logfile = PROJECT_DOCUMENT_ROOT.'/log/DB/dbEvents'.date('m_Y').'.txt';
+        //String bereitstellen inkl. escapen
+        $data = date("d.m.Y H:i:s", time()).' : '.$sqlQuery.' ['.$_SERVER['SCRIPT_FILENAME'].']'."\n";
+        //Dateirechte auf schreiben setzen und in Datei schreiben
+        include PROJECT_DOCUMENT_ROOT.'/ftp_conn.php';    
+        ftp_chmod($ftpConn, 666, PROJECT_DOCUMENT_ROOT.'/log/DB/dbEvents'.date('m_Y').'.txt');
+        if (!file_put_contents($logfile, $data, FILE_APPEND)) {
+            echo "Daten konnten nicht in Datei geschrieben werden.";
+        }
+        ftp_chmod($ftpConn, 640, PROJECT_DOCUMENT_ROOT.'/log/DB/dbEvents'.date('m_Y').'.txt');                
+    }
+}
+
+?>

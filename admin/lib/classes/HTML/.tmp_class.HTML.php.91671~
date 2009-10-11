@@ -1,0 +1,163 @@
+<?php
+
+class HTML
+{
+    /**
+     * The Main-Navi-Links are set in an array:
+     * key 'sitename' contains the name of the accordant site (without the filetype);
+     * key 'linktext' contains the string, that should be shown as link.
+     */  
+    private static $MainNaviArray = array(
+
+                                			0 => array(
+                                					'sitename' => "index",
+                                					'linktext' => "About" 					
+                                					),
+                                			1 => array(
+                                					'sitename' => "programme",
+                                					'linktext' => "Programme" 
+                                					),
+                                      2 => array(
+                                					'sitename' => "repertoire",
+                                					'linktext' => "Repertoire" 					   				
+                                					),
+                                			3 => array(
+                                					'sitename' => "medien",
+                                					'linktext' => "Medien" 					   				
+                                					),
+                                			4 => array(
+                                					'sitename' => "reviews",
+                                					'linktext' => "Reviews"
+                                					),
+                                			5 => array(
+                                					'sitename' => "kontakt",
+                                					'linktext' => "Kontakt"
+                                					)			
+                                      );  
+    
+    /**
+     * The Footer-Navi-Links (like impressum, sitemap, siteinfos etc.) are set in an array:
+     * key 'sitename' contains the name of the accordant site (without the filetype);
+     * key 'linktext' contains the string, that should be shown as link.
+     */                           
+    private static $FooNaviArray = array(                          			
+                                			0 => array(
+                                					'sitename' => "impressum",
+                                					'linktext' => "impressum"
+                                					)			
+                                      );                               
+  
+    /**
+     * Html-Header Output
+     * 
+     * The full Head-part until but without the closing </head>-tag is issued.
+     */
+    public static function printHeader()
+    {
+        echo '
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="de" lang="de">
+
+  <head>
+    <title>'.HTML_TITLE.'</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    
+    <link rel="stylesheet" type="text/css" href="lib/css/default.css">
+    <script src="'.PROJECT_HTTP_ROOT.'/lib/js/default.js" type="text/javascript"></script>';
+    }
+  
+  
+    /**
+     * Html-Body Output
+     * 
+     * The closing </head>-tag and the beginning Body-part with all invariable sitecode is issued.
+     */
+    public static function printBody()
+    {
+        echo '
+  </head>
+  <body>
+  
+    <div id="viewport_sicherung">
+    </div>
+    
+    <div id="container">
+    
+      <div id="logo">
+      </div>
+      
+        <div id="column_left">
+          <div id="foto"><img src="images/ich.jpg" />
+          </div>
+          <div id="news"><div id="news_top">Aktuell</div>
+          </div>
+        </div>  	
+
+      
+        <div id="content">'."\n".'';
+    }
+    
+    
+    /**
+     * Main-Navi Output
+     *      
+     * The filenames and linknames, which are set in the array '$MainNaviArray' is run through
+     * the foreach loop and each navi-link is issued with the accordant string as name.
+     * After each link, except the last one (defined in '$lastLink'), is issued a vertical separator.
+     * The link of the actual site shown in the browser is marked with the div class 'selected' and 
+     * so highlighted per css. 
+     */
+    public static function printMainNavi($lastLink)
+    {
+        echo '
+          <div id="navi">';		
+        foreach (self::$MainNaviArray as $naviRow) {
+        		if ($naviRow['sitename'] !== basename($_SERVER['PHP_SELF'],".php") or 
+        			"impressum" == basename($_SERVER['PHP_SELF'],".php")) {
+        				echo '
+            <a href="'.$naviRow['sitename'].'.php">'.$naviRow['linktext'].'</a>';
+        		}
+        		else {
+        				echo '
+            <a class="selected">'.$naviRow['linktext'].'</a>';
+            }
+            if ($naviRow['sitename'] !== $lastLink) {
+               echo '<div class="navi_vert_line">|</div>'; 
+            }
+        }
+        echo '
+          </div>'."\n\n".'';      
+    }
+    
+    
+    /**
+     * Html-Footer Output
+     * 
+     * All closing </div>-tags of the invariable Divs in the Body-part and
+     * the closing </body>- and </html>-tag is issued.
+     */
+    public static function printFooter()
+    {
+        echo '
+         </div>        
+                   <div class="right">&copy; Pavel Pozdyshev 2009 &nbsp;&nbsp;|&nbsp;&nbsp;';                                
+      	         
+        foreach (self::$FooNaviArray as $naviRow) {
+        		if ($naviRow['sitename'] !== basename($_SERVER['PHP_SELF'], '.php')) {
+        				echo '<a href="'.$naviRow['sitename'].'.php">'.$naviRow['linktext'].'</a>';           
+        		}        
+        		else {
+        				echo '<a class="selected">'.$naviRow['linktext'].'</a>';               
+        		}
+        }      
+        echo '
+            </div>
+  	</div>
+
+  </body>
+</html>';
+    }
+  
+}
+
+?>
