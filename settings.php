@@ -83,6 +83,6 @@ $Whitelist_GET_subnav = array(
 define('FORM_EMAIL', 'contact@naturmedicine.ru');
 
 //Salt für die Login-Authentifizierung
-define('SALT_LOGIN', '88188');
+define('SALT_LOGIN', '876975764');
 
 ?>

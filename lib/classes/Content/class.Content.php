@@ -185,7 +185,7 @@ class Content
                 //Falls die Seite 'szenisch' oder 'portraet'                                
                 case 'articles_philosophy':    //fallthrough 
                 case 'articles_methodology':                        
-                case 'articles_simple_answers' :
+                case 'articles_simple_answers':
                 
                     //Die Einträge ausgeben
                     while($entry = $result->fetch_assoc()) {

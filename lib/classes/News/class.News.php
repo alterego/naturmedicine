@@ -27,25 +27,22 @@ class News
           <div id="news">';
             
         //Die aktuellsten drei Konzert-Einträge aus Datenbank holen        
-        $sql    = "SELECT * FROM konzerte WHERE timestamp > '".date('Y-m-d H:i:s')."' ORDER BY timestamp ASC LIMIT ".$numEntries."";
+        $sql    = "SELECT * FROM news ORDER BY sort_id LIMIT ".$numEntries."";
         $result = $this->DB->query($sql, false);
         
         //Wenn keine kommenden Konzerte in Datenbank, Ausgabe von Alternativ-Text
         if ($result->num_rows == 0) {
             echo '<p class="keine_news">Zur Zeit sind keine Einträge vorhanden.<br /><br />
-                 Möchten Sie unkompliziert über die kommenden Konzerte informiert werden, können Sie den <a class="bold" href="'.URL_RSS_KONZERTE.'">&#8594; RSS-Feed</a> abonnieren.</p>';
+                 Möchten Sie unkompliziert die News von naturmedicine.ru erhalten, können Sie den <a class="bold" href="'.URL_RSS_KONZERTE.'">&#8594; RSS-Feed</a> abonnieren.</p>';
         }
         else {
           
             //Die Einträge ausgeben
             while($entry = $result->fetch_assoc()) {
                 echo '
-              <a href="'.SERVER_ROOT_PATH.'/konzerte/#n'.$entry['id'].'">
-                <div class="time">'.$entry['date'].'</div><div class="location">'.htmlspecialchars($entry['location']).'</div>
-	                <p>'.htmlspecialchars($entry['place']).', '.$entry['time'].'</p>
-                  <p>'.htmlspecialchars($entry['newstext']).'</p>
-
-              </a>
+              <div class="time">'.$entry['date'].'</div><div class="location">'.htmlspecialchars($entry['location']).'</div>
+                <p>'.htmlspecialchars($entry['place']).', '.$entry['time'].'</p>
+                <p>'.htmlspecialchars($entry['newstext']).'</p>
               <div class="strich"></div>';
             } 
         }

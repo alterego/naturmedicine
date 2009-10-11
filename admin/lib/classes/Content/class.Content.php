@@ -10,18 +10,12 @@ class Content
     
     //Subnavi-Handlers
     private $Subnav        = null;
-    private $SubnavPlusAmp = '?';
-    
-    //Subsubnavi-Handlers
-    private $Subsubnav        = null;
-    private $SubsubnavPlusAmp = null;
-    private $AmpPlusSubsubnav = null;    
+    private $SubnavPlusAmp = '?';       
     
     //Die entsprechende Datenbank-Tabelle
     public $DBTableName = null;
     
     //Status der verschiedenen 'areas' ('open' oder 'close')
-    private $AreaFormTitle = null;       
     private $AreaEintraege = null;       
     private $AreaNewForm   = null;
     
@@ -55,22 +49,9 @@ class Content
             $this->DBTableName = $_GET['subnav'];
             
             $this->Subnav         = '?subnav='.$_GET['subnav']; 
-            $this->SubnavPlusAmp .= 'subnav='.$_GET['subnav'].'&'; 
-            
-            //Wenn eine Unternavigation der Unternavigation existiert, überprüfen, ob eine Unterseite ausgewählt ist.
-            if (isset($_GET['subsubnav']) AND !empty($_GET['subsubnav'])) {
-              
-                //Wenn GET-Variable übergeben, wird diese als Datenbanktabellen-Name verwendet.                
-                $this->DBTableName = $_GET['subsubnav'];
-                
-                $this->Subsubnav        .= 'subsubnav='.$_GET['subsubnav']; 
-                $this->SubsubnavPlusAmp .= 'subsubnav='.$_GET['subsubnav'].'&'; 
-                $this->AmpPlusSubsubnav .= '&subsubnav='.$_GET['subsubnav']; 
-            }             
-        }                                 
-        
-        //Wenn keine Unternavigation existiert.
-        else {
+            $this->SubnavPlusAmp .= 'subnav='.$_GET['subnav'].'&';                          
+        } 
+        else {                                        
           
             //Wenn keine Unternavigation existiert, wird der Seitenname (Hauptnavigation) als Datenbanktabelle verwendet.
             //Wenn die Index-Seite ausgewählt ist, wird der Name 'home' verwendet ('index' ist ein reserviertes Wort in SQL).
@@ -96,52 +77,13 @@ class Content
         $this->purchaseDBOperations();                                
         
         //Der benutzerdefinierte Status der verschiedenen 'areas' wird ermittelt und entschieden, welcher angezeigt wird.
-        $sql    = "SELECT form_title,eintraege,form_new FROM user_config WHERE login = '".$_SESSION['username']."'";
+        $sql    = "SELECT eintraege,form_new FROM user_config WHERE login = '".$_SESSION['username']."'";
         $result = $this->DB->query($sql);
         $entry  = $result->fetch_assoc(); 
         
         //Speichern in Klassen-Attributen       
-        $this->AreaFormTitle = $entry['form_title'];       
         $this->AreaEintraege = $entry['eintraege'];       
-        $this->AreaNewForm   = $entry['form_new'];       
-        
-        if ($this->DBTableName !== 'excerpts') {
-        
-            echo '
-         <div id="area1" class="area">
-           <h2>Seitentitel bearbeiten<a href="javascript:ajaxRequest(\'scripts/AJAX/closeArea.php?area_name=form_title\');"><div class="closer"><img src="images/button_area_close.png" /></div></a></h2>';
-            
-            if ($this->AreaFormTitle == 'close') {
-                echo '
-           <div id="invisible_form_title" class="invisible">';
-            }
-         
-            //Das Formular zum Bearbeiten des Seitentitels wird ausgegeben. 
-            echo '
-          <form id="form_title" action="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.$this->AmpPlusSubsubnav.'" method="post" enctype="multipart/form-data">';          
-                      
-            $sql    = "SELECT * FROM site_titles WHERE sitename = '".$this->DBTableName."'";
-            $result = $this->DB->query($sql);
-            $entry  = $result->fetch_assoc();
-                    
-            $_POST['site_title'] = $entry['site_title'];  
-                        
-            //Token für Formular erstellen
-            $token_sitetitle = FormProtection::generateToken('token_sitetitle');         
-        
-            echo '
-            <input type="text" name="site_title" size="50" value="'.$_POST['site_title'].'" /><br />                              
-            <input class="margintop_10" type="submit" name="submit" value="senden" />        
-            <input type="hidden" name="id" value="'.$entry['id'].'" />      
-            <input type="hidden" name="token_sitetitle" value="'.$token_sitetitle.'" />      
-          </form>
-         </div>';
-        }
-        
-        if ($this->AreaFormTitle == 'close' AND $this->DBTableName !== 'excerpts') {
-              echo '
-         </div>';
-        }            
+        $this->AreaNewForm   = $entry['form_new'];                         
             
         //Der unveränderliche Head des Übersichtsbereichs wird ausgegeben.        
         echo "\n".'
@@ -154,7 +96,7 @@ class Content
         }          
           
         echo '  
-          <form id="eintraege" name="eintrag" action="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.$this->AmpPlusSubsubnav.'" method="post">';
+          <form id="eintraege" name="eintrag" action="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.'" method="post">';
                   
         //Die jeweils aktuellen Datenbank-Einträge werden aufgelistet.
         $this->printOverview();
@@ -198,7 +140,7 @@ class Content
         
         echo '
           <h2 class="h">'; if (isset($_POST['id']) AND !empty($_POST['id'])) { echo 
-                     'Ausgewählten Eintrag bearbeiten<a class="sub" href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.$this->AmpPlusSubsubnav.'#area_anker" onclick="resetForm();">&#8594; Neuen Eintrag hinzufügen</a>'; }
+                     'Ausgewählten Eintrag bearbeiten<a class="sub" href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.'#area_anker" onclick="resetForm();">&#8594; Neuen Eintrag hinzufügen</a>'; }
                 else { echo 'Neuen Eintrag hinzufügen'; } echo '<a href="javascript:ajaxRequest(\'scripts/AJAX/closeArea.php?area_name=form_new\');"><div class="closer"><img src="images/button_area_close.png" /></div></a></h2>';               
           
         if ($this->AreaNewForm == 'close') {
@@ -207,7 +149,7 @@ class Content
         }         
         
         echo '        
-          <form id="form_new" name="formnew" action="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.$this->AmpPlusSubsubnav.'" method="post" enctype="multipart/form-data">';
+          <form id="form_new" name="formnew" action="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->Subnav.'" method="post" enctype="multipart/form-data">';
           
         //Wenn ein Fehler bei der Datenvalidierung auftrat, wird hier die Fehlermeldung ausgegeben.
         if ($GLOBALS['EntryHandler']->ErrorObj === false) {
@@ -272,7 +214,7 @@ class Content
             $sql    = "SELECT * FROM ".$this->DBTableName." ORDER BY sort_id";
         }
         
-        $result = $this->DB->query($sql, false);
+        $result = $this->DB->query($sql);
        
         //Wenn kein Datenbankeintrag vorhanden ist, wird eine Meldung ausgegeben.
         if ($result->num_rows == 0) {
@@ -295,85 +237,88 @@ class Content
             <div class="eintrag">
               <input type="checkbox" name="entries[]" value="'.$entry['id'].'" />
               <div class="data">
-                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.$this->SubsubnavPlusAmp.'editId='.$entry['id'].'#buttons">';                
+                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.'editId='.$entry['id'].'#buttons">';                
         
                 //Ausgabe der einzelnen veränderlichen Daten
                 //Um allenfalls zu langen Strings vorzubeugen, werden diese an die Funktion 'checkLength' übergeben und falls nötig gekürzt.
                 switch ($this->DBTableName) {
               
                 //Falls die Hauptseite (index)
-                case 'home':                                           
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title']));                        
+                case 'home':      //fallthrough
+                case 'our_philosophy':
+                                           
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title']).' | '.htmlspecialchars($entry['text']));                        
                     break;
             
                 //Falls die Seite 'Konzerte'
-                case 'konzerte':     
-                    echo htmlspecialchars($entry['location']).' | '.htmlspecialchars($entry['date']).', '.htmlspecialchars($entry['time']).' Uhr';                                            
+                case 'chiefdoctor':     //fallthrough
+                case 'homeopaths': 
+                case 'gynecologists':
+                case 'therapists':
+                case 'neurologists':
+                case 'psychologists': 
+                case 'administration': 
+    
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['name']).' | '.htmlspecialchars($entry['text']));                                            
                     break;
                
                 //Falls die Seite 'Rezitalprogramme'                
-                case 'oper':        //fallthrough                                  
-                case 'rollen': 
-                case 'geistlich': 
-                case 'liedzyklen': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['composer'].': '.$entry['pieces']));
+                case 'what_is_homeopathy':  //fallthrough
+                case 'lifestyle': 
+                case 'when_call_doctor': 
+                case 'simple_answers': 
+                case 'how_find_doctor': 
+                case 'what_to_read': 
+                case 'advertisements_patients': 
+
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title'].' | '.$entry['text']));
                     break;                   
                         
                 //Falls die Seite 'Bilder'                                        
-                case 'franzoesisch':    //fallthrough                                                       
-                case 'deutsch':                                                        
-                case 'englisch':                         
+                case 'clinical_discussions':    //fallthrough                                                                        
+                case 'coming_seminars':                                         
+                case 'past_seminars':                         
+                case 'advertisements_doctors': 
+                       
                     echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['composer'].': '.$entry['pieces']));
                     break;                       
                 
                 //Falls die Seite 'CD'                                
-                case 'szenisch':      //fallthrough                    
-                case 'portraet': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title'].' | '.$entry['description']));
+                case 'articles_philosophy':    //fallthrough 
+                case 'articles_methodology':                        
+                case 'articles_simple_answers':
+
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['author'].' | '.$entry['title'].' | '.$entry['text']));
                     break; 
                     
                 //Falls die Seite 'medien_klassisch'                                        
-                case 'medien_klassisch':    //fallthroug                       
-                case 'medien_chanson':                         
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['description']));
+                case 'guidebooks':     //fallthrough           
+                case 'for_parents':
+                case 'for_specialists':     
+                    
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['author'].' | '.$entry['title'].' | '.$entry['text']));
                     break;                         
                 
                 //Falls die Seite 'Video'                                
-                case 'medien_filme':                         
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title'].' | '.$entry['description']));
+                case 'editions':      //fallthrough
+                case 'parent_schools': 
+                case 'info_sources': 
+                case 'centers_and_doctors':
+                         
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title'].' | '.$entry['text']));
                     break;  
                     
                 //Falls die Seite 'Video'                                
-                case 'projekte_duo':        //fallthrough                    
-                case 'projekte_publikation':                         
-                case 'projekte_forschung':                         
+                case 'contact_address':   
+                      
                     echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['text']));
                     break;                                                                                                            
                 
                 //Falls die Seite 'Reviews'                
-                case 'downloads_fotos': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['description']));
-                    break;  
-                    
-                //Falls die Seite 'Reviews'                
-                case 'downloads_cv': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['description']));
-                    break;                                                                      
-               
-                //Falls die Seite 'Kontakt'                
-                case 'kontakt': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['title']));
-                    break;                           
-                    
-                //Falls die Seite 'Reviews'                
-                case 'links': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['linktext'].' | '.$entry['hyperlink']));
-                    break;  
-                    
-                //Falls die Seite 'Reviews'                
-                case 'excerpts': 
-                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['author'].' | '.$entry['text']));
-                    break;                                                     
+                case 'roadmap':
+
+                    echo htmlspecialchars($GLOBALS['EntryHandler']->checkLength($entry['text']));
+                    break;                                                          
             }                       
             
                 //Ausgabe des jeweils unveränderlichen abschliessenden Teils (Buttons zum Editieren und Löschen der einzelnen Einträge.)
@@ -381,9 +326,9 @@ class Content
                 </a>
               </div>
               <div class="buttons">
-                <a href="javascript:update(\'scripts/AJAX/previewEntry.php'.$this->SubnavPlusAmp.$this->SubsubnavPlusAmp.'id='.$entry['id'].'&tablename='.$this->DBTableName.'&siten='.$this->SiteName.'\', \'item_'.$entry['id'].'\');"><img src="images/button_preview.png" /></a>           
-                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.$this->SubsubnavPlusAmp.'editId='.$entry['id'].'#buttons"><img src="images/button_edit.png" /></a>
-                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.$this->SubsubnavPlusAmp.'delId='.$entry['id'].'"><img src="images/button_delete.png" /></a>                
+                <a href="javascript:update(\'scripts/AJAX/previewEntry.php'.$this->SubnavPlusAmp.'id='.$entry['id'].'&tablename='.$this->DBTableName.'&siten='.$this->SiteName.'\', \'item_'.$entry['id'].'\');"><img src="images/button_preview.png" /></a>           
+                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.'editId='.$entry['id'].'#buttons"><img src="images/button_edit.png" /></a>
+                <a href="'.htmlspecialchars($_SERVER['PHP_SELF']); echo $this->SubnavPlusAmp.'delId='.$entry['id'].'"><img src="images/button_delete.png" /></a>                
               </div>              
             </div>
             <div id="preview'.$entry['id'].'">                 
@@ -406,7 +351,8 @@ class Content
         switch ($this->DBTableName) {
           
             //Falls die Hauptseite (index)
-            case 'home':                   
+            case 'home':      //fallthrough
+            case 'our_philosophy': 
 
                 echo '
             <p>Titel:</p>                      
@@ -417,63 +363,21 @@ class Content
                 break;
             
             //Falls die Seite 'Konzerte'
-            case 'konzerte':                
+            case 'chiefdoctor':     //fallthrough
+            case 'homeopaths': 
+            case 'gynecologists':
+            case 'therapists':
+            case 'neurologists':
+            case 'psychologists': 
+            case 'administration':                 
                 
                 echo '
-            <p>Datum: <span class="kursiv">(17.10.2012)</span></p>
-            <input type="text" name="date" size="15" maxlength="10" value="'; if ($this->FormSubmitOk === true) { echo $_POST['date']; } echo '" />
-            <p>Ort:</p>                      
-            <input type="text" size="35" name="location" value="'; if ($this->FormSubmitOk === true) { echo $_POST['location']; } echo '" />
-            <p>Lokal:</p>                      
-            <input type="text" size="35" name="place" value="'; if ($this->FormSubmitOk === true) { echo $_POST['place']; } echo '" />                     
-            <p>Link (Webseite des Lokals):  <span class="kursiv">(z.B. http://www.juliaschiwowa.com)</span></p>                      
-            <input type="text" class="formular" name="link" value="'; if ($this->FormSubmitOk === true) { echo $_POST['link']; } echo '" />                                            
-            <p>Zeit (Konzertbeginn): <span class="kursiv">(20:30)</span></p>                      
-            <input type="text" name="time" size="10" maxlength="5" value="'; if ($this->FormSubmitOk === true) { echo $_POST['time']; } echo '" />                      
-            <p>Programmbeschreibung:</p>                      
-            <textarea name="program" class="mceEditor" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['program']; } echo '</textarea>
-            <p>Beschreibung für das News-Feld:</p>                      
-            <textarea name="newstext" cols="30" rows="4">'; if ($this->FormSubmitOk === true) { echo $_POST['newstext']; } echo '</textarea><br />';
-
-
-                break;
-               
-            //Falls die Seite 'Rezitalprogramme'                
-            case 'oper':    //fallthrough
-            case 'rollen':
-            case 'geistlich':
-            case 'liedzyklen':
-
-                echo '
-            <p>Komponist:</p>
-            <input type="text" class="formular" name="composer" value="'; if ($this->FormSubmitOk === true) { echo $_POST['composer']; } echo '" />
-            <p>Werk(e):</p>                                                       
-            <textarea name="pieces" class="formular" cols="60" rows="10">'; if ($this->FormSubmitOk === true) { echo $_POST['pieces']; } echo '</textarea>';                      
-            
-                break;     
-                
-            //Falls die Seite 'Orchesterrepetoire'                                
-            case 'franzoesisch':    //fallthrough
-            case 'deutsch':
-            case 'englisch':
-
-                echo '
-            <p>Komponist:</p>
-            <input type="text" class="formular" name="composer" value="'; if ($this->FormSubmitOk === true) { echo $_POST['composer']; } echo '" />
-            <p>Werk(e):</p>                                                       
-            <textarea name="pieces" class="formular" cols="60" rows="10">'; if ($this->FormSubmitOk === true) { echo $_POST['pieces']; } echo '</textarea>';                      
-            
-                break;                 
-                
-            //Falls die Seite 'Bilder'                                        
-            case 'szenisch':       //fallthrough                  
-            case 'portraet':                         
-                
-                echo '
-			      <p>Titel:</p>
-            <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />
-            <p>Beschreibung:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>
+            <p>Name:</p>
+            <input type="text" name="name" value="'; if ($this->FormSubmitOk === true) { echo $_POST['name']; } echo '" />
+            <p>E-Mail:/p>                      
+            <input type="email" class="formular" name="link" value="'; if ($this->FormSubmitOk === true) { echo $_POST['email']; } echo '" />                                            
+            <p>Text:</p>                      
+            <textarea name="text" class="mceEditor" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>'; if ($this->FormSubmitOk === true) { echo $_POST['newstext']; } echo '</textarea><br />
             <p>Bild-Datei: <span class="kursiv">(jpg, png)</span></p>                      
             <input type="file" class="formular" name="file" value="" /><br />';
             
@@ -491,16 +395,67 @@ class Content
                 $this->printFileView($fileInfoArr);
             }
             
+                break;
+               
+            //Falls die Seite 'Rezitalprogramme'                
+            case 'what_is_homeopathy':  //fallthrough
+            case 'lifestyle': 
+            case 'when_call_doctor': 
+            case 'simple_answers': 
+            case 'how_find_doctor': 
+            case 'what_to_read': 
+            case 'advertisements_patients':
+
+                echo '
+            <p>Titel:</p>                      
+            <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />                      
+            <p>Text:</p>                      
+            <textarea name="text" class="formular" cols="60" rows="25">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';
+
+                break;     
+                
+            //Falls die Seite 'Orchesterrepetoire'                                
+            case 'clinical_discussions':    //fallthrough                                                                        
+            case 'coming_seminars':                                         
+            case 'past_seminars':                         
+            case 'advertisements_doctors':
+
+                echo '
+            <p>Komponist:</p>
+            <input type="text" class="formular" name="composer" value="'; if ($this->FormSubmitOk === true) { echo $_POST['composer']; } echo '" />
+            <p>Werk(e):</p>                                                       
+            <textarea name="pieces" class="formular" cols="60" rows="10">'; if ($this->FormSubmitOk === true) { echo $_POST['pieces']; } echo '</textarea>';                      
+            
+                break;                 
+                
+            //Falls die Seite 'Bilder'                                        
+            case 'articles_philosophy':    //fallthrough 
+            case 'articles_methodology':                        
+            case 'articles_simple_answers':                         
+                
+                echo '
+            <p>Author:</p>                      
+            <input type="text" class="formular" name="author" value="'; if ($this->FormSubmitOk === true) { echo $_POST['author']; } echo '" />                                  
+            <p>Titel:</p>                      
+            <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />                      
+            <p>Text:</p>                      
+            <textarea name="text" class="formular" cols="60" rows="25">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';
+
                 break;                                                                          
                 
             //Falls die Seite 'Tonbeispiele'                                     
-            case 'medien_klassisch':    //fallthrough
-            case 'medien_chanson': 
+            case 'guidebooks':     //fallthrough           
+            case 'for_parents':
+            case 'for_specialists':  
 
                 echo '
-            <p>Beschreibung:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="5">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>
-            <p>Audio-Datei: <span class="kursiv">(mp3)</span></p>                      
+            <p>Author:</p>                      
+            <input type="text" class="formular" name="author" value="'; if ($this->FormSubmitOk === true) { echo $_POST['author']; } echo '" />                                  
+            <p>Titel:</p>                      
+            <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />                      
+            <p>Text:</p>                      
+            <textarea name="text" class="formular" cols="60" rows="25">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>
+            <p>Bild-Datei: <span class="kursiv">(jpg,png)</span></p>                      
             <input type="file" class="formular" name="file" value="" /><br />';
             
             //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
@@ -520,211 +475,38 @@ class Content
                 break;                        
                         
             //Falls die Seite 'Bilder'                                        
-            case 'medien_filme':                         
+            case 'editions':      //fallthrough
+            case 'parent_schools': 
+            case 'info_sources': 
+            case 'centers_and_doctors':                         
                 
                 echo '
             <p>Titel:</p>
             <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />
             <p>Beschreibung:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>
-            <p>Video-Datei: <span class="kursiv">(flv)</span></p>                      
-            <input type="file" class="formular" name="file" value="" /><br />';                 
+            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>
+            <p>Hyperlink: <span class="kursiv">(z.B. http://www.juliaschiwowa.com)</span></p>
+            <input type="text" class="formular" name="link" value="'; if ($this->FormSubmitOk === true) { echo $_POST['link']; } echo '" />';
             
-            
-             //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
-            
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath'],
-                                            'thumb_filepath' => 'none',
-                                            'filetype'       => 'Video-Datei'
-                                          )                                     
-                                );            
-                
-                $this->printFileView($fileInfoArr);            
-            }
-                
                 break;  
                 
             //Falls die Seite 'Projekte - Duo'                
-            case 'projekte_duo': 
+            case 'contact_address': 
 
                 echo '
             <p>Text:</p>                      
-            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>
-            <p>Bild-Datei: <span class="kursiv">(jpg, png)</span></p>                      
-            <input type="file" class="formular" name="file" value="" /><br />';
-                      
-            //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
-            
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath'],
-                                            'thumb_filepath' => $_POST['admin_thumbnailpath'],
-                                            'filetype'       => 'Bild-Datei'
-                                          )                                     
-                                );            
-                
-                $this->printFileView($fileInfoArr);
-            }       
+            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';                                 
             
                 break;  
                 
             //Falls die Seite 'Projekte - Publikation'                
-            case 'projekte_publikation': 
+            case 'roadmap': 
 
                 echo '
             <p>Text:</p>                      
-            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>
-            <p>Bild-Datei: <span class="kursiv">(jpg, png)</span></p>                      
-            <input type="file" class="formular" name="file" value="" /><br />';
-                      
-            //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
+            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';                                 
             
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath'],
-                                            'thumb_filepath' => $_POST['admin_thumbnailpath'],
-                                            'filetype'       => 'Bild-Datei'
-                                          )                                     
-                                );            
-                
-                $this->printFileView($fileInfoArr);
-            }       
-            
-                break;  
-                
-            //Falls die Seite 'Projekte - Forschung'                
-            case 'projekte_forschung': 
-
-                echo '
-            <p>Text:</p>                      
-            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';
-
-                break;                                                                            
-                
-            //Falls die Seite 'Bilder'                                        
-            case 'downloads_fotos':                         
-                
-                echo '
-            <p>Beschreibung:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>
-            <p>Bild-Datei: <span class="kursiv">(jpg, png)</span></p>                      
-            <input type="file" class="formular" name="file" value="" /><br />';
-            
-            
-            //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
-            
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath'],
-                                            'thumb_filepath' => $_POST['admin_thumbnailpath'],
-                                            'filetype'       => 'Bild-Datei'
-                                          )                                     
-                                );            
-                
-                $this->printFileView($fileInfoArr);
-            }
-            
-                break;                                          
-                
-            //Falls die Seite 'Video'                                
-            case 'downloads_cv':                         
-                
-                echo '
-            <p>Beschreibung:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>            
-            <p>Word-Datei: <span class="kursiv">(doc, odt)</span></p>                      
-            <input type="file" class="formular" name="file[]" value="" /><br />            
-            <p>PDF-Datei:</p>                      
-            <input type="file" class="formular" name="file[]" value="" />';
-            
-            //Das Array mit den Infos zu den Upload-Feldern wird serialisiert, um es per POST senden zu können.            
-            $fileTypeArr = array(
-                                0 => 'word',
-                                1 => 'pdf'
-                            );
-                            
-            $ft = serialize($fileTypeArr);
-            
-                echo '
-            <input type="hidden" name="filetypes" value=\''.$ft.'\' /><br />';            
-            
-                     
-            //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
-                            
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath_word'],
-                                            'thumb_filepath' => 'none',
-                                            'filetype'       => 'Word-Datei'
-                                          ), 
-                                    1 => array(
-                                            'filepath'       => $_POST['filepath_pdf'],
-                                            'thumb_filepath' => 'none',
-                                            'filetype'       => 'PDF-Datei'
-                                          )                                      
-                                );                           
-                
-                $this->printFileView($fileInfoArr);            
-            }
-               
-                break;               
-                
-            //Falls die Seite 'Kontakt'                
-            case 'kontakt': 
-
-                echo '
-            <p>Titel:</p>
-            <input type="text" class="formular" name="title" value="'; if ($this->FormSubmitOk === true) { echo $_POST['title']; } echo '" />
-            <p>Bild-Datei (Visitenkarte): <span class="kursiv">(jpg, png)</span></p>                      
-            <input type="file" class="formular" name="file" value="" /><br />';
-           
-           
-            //Wenn eine Datei zum Dateneintrag gehört, wird diese ausgegeben.
-            if ($this->FormSubmitOk === true) {
-            
-                $fileInfoArr = array(
-                                    0 => array(
-                                            'filepath'       => $_POST['filepath'],
-                                            'thumb_filepath' => $_POST['admin_thumbnailpath'],
-                                            'filetype'       => 'Bild-Datei'
-                                          )                                     
-                                );            
-                
-                $this->printFileView($fileInfoArr);
-            }       
-            
-                break;      
-                
-            //Falls die Seite 'Kontakt'                
-            case 'links': 
-
-                echo '
-            <p>Hyperlink: <span class="kursiv">(z.B. http://www.juliaschiwowa.com)</span></p>
-            <input type="text" class="formular" name="hyperlink" value="'; if ($this->FormSubmitOk === true) { echo $_POST['hyperlink']; } echo '" />
-            <p>Link-Text:</p>
-            <input type="text" class="formular" name="linktext" value="'; if ($this->FormSubmitOk === true) { echo $_POST['linktext']; } echo '" />           
-		        <p>Beschreibungs-Text:</p>                      
-            <textarea name="description" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['description']; } echo '</textarea>';
-
-                break;   
-                
-            //Falls die Seite 'Zitate'                
-            case 'excerpts': 
-
-                echo '
-            <p>Autor:</p>                      
-            <input type="text" class="formular" name="author" value="'; if ($this->FormSubmitOk === true) { echo $_POST['author']; } echo '" />
-            <p>Text:</p>
-            <textarea name="text" class="formular" cols="60" rows="9">'; if ($this->FormSubmitOk === true) { echo $_POST['text']; } echo '</textarea>';
-            
-                break;                                                                                                                                      
+                break;                                                                                                                                       
         }
     } 
     

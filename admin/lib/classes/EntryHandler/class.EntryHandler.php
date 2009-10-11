@@ -65,30 +65,34 @@ class EntryHandler
     public function deleteEntry()
     {
         //Wenn ein Bild (Datei) zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
-        if ($GLOBALS['CONTENT']->DBTableName == 'szenisch' OR 
-            $GLOBALS['CONTENT']->DBTableName == 'portraet' OR
-            $GLOBALS['CONTENT']->DBTableName == 'downloads_fotos' OR
-            $GLOBALS['CONTENT']->DBTableName == 'projekte_duo' OR
-            $GLOBALS['CONTENT']->DBTableName == 'projekte_publikation' OR
-            $GLOBALS['CONTENT']->DBTableName == 'kontakt') {
-            $this->deleteImage();
+        if ($GLOBALS['CONTENT']->DBTableName == 'chiefdoctor' OR 
+            $GLOBALS['CONTENT']->DBTableName == 'homeopaths' OR
+            $GLOBALS['CONTENT']->DBTableName == 'gynecologists' OR
+            $GLOBALS['CONTENT']->DBTableName == 'therapists' OR
+            $GLOBALS['CONTENT']->DBTableName == 'neurologists' OR
+            $GLOBALS['CONTENT']->DBTableName == 'psychologists' OR
+            $GLOBALS['CONTENT']->DBTableName == 'administration' OR
+            $GLOBALS['CONTENT']->DBTableName == 'guidebooks' OR
+            $GLOBALS['CONTENT']->DBTableName == 'for_parents' OR
+            $GLOBALS['CONTENT']->DBTableName == 'for_specialists') {
+                $this->deleteImage();
         }   
         
-        //Wenn eine Videodatei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
-        if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {
-            $this->deleteVideo();
-        }         
-        
-        //Wenn eine Audiodatei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
-        if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
-            $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {
-            $this->deleteAudio();
-        }     
-        
-        //Wenn eine PDF-datei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
-        if ($GLOBALS['CONTENT']->DBTableName == 'downloads_cv') {
-            $this->deleteFile();
-        }            
+//        //Wenn eine Videodatei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
+//        if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {
+//            $this->deleteVideo();
+//        }         
+//        
+//        //Wenn eine Audiodatei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
+//        if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
+//            $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {
+//            $this->deleteAudio();
+//        }     
+//        
+//        //Wenn eine PDF-datei zum Dateneintrag gehört, wird die entsprechende Datei gelöscht.
+//        if ($GLOBALS['CONTENT']->DBTableName == 'downloads_cv') {
+//            $this->deleteFile();
+//        }            
         
         //Der Dateneintrag wird vollständig aus der Datenbank gelöscht.     
         $sql = "DELETE FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$_GET['delId']."";
@@ -109,21 +113,25 @@ class EntryHandler
             
                 //Falls es eine Datei zu löschen gilt, werden je nach Datei (Bild, Audio, Video) 
                 //die entsprechenden Methoden zum Löschen der Datei aufgerufen.         
-                if ($GLOBALS['CONTENT']->DBTableName == 'szenisch' OR 
-                    $GLOBALS['CONTENT']->DBTableName == 'portraet' OR
-                    $GLOBALS['CONTENT']->DBTableName == 'downloads_fotos' OR
-                    $GLOBALS['CONTENT']->DBTableName == 'projekte_duo' OR
-                    $GLOBALS['CONTENT']->DBTableName == 'projekte_publikation' OR                    
-                    $GLOBALS['CONTENT']->DBTableName == 'kontakt') {
+                if ($GLOBALS['CONTENT']->DBTableName == 'chiefdoctor' OR 
+                    $GLOBALS['CONTENT']->DBTableName == 'homeopaths' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'gynecologists' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'therapists' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'neurologists' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'psychologists' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'administration' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'guidebooks' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'for_parents' OR
+                    $GLOBALS['CONTENT']->DBTableName == 'for_specialists') {
                     $this->deleteImage($entry);
                 }
-                if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {
-                    $this->deleteVideo($entry);
-                }
-                if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
-                    $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {
-                    $this->deleteAudio($entry);
-                }     
+//                if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {
+//                    $this->deleteVideo($entry);
+//                }
+//                if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
+//                    $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {
+//                    $this->deleteAudio($entry);
+//                }     
                 
                 //Unabhängig von der Dateiart wird der Dateneintrag aus der Datenbank gelöscht.                   
                 $sql = "DELETE FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entry."";
@@ -188,13 +196,16 @@ class EntryHandler
                     $_FILES['file']['name'] = preg_replace('! !', '_', trim($_FILES['file']['name']));            
                     
                     //Wenn es sich um die Seiten 'fotos' oder 'konzerte' handelt, werden die Methoden zur Bildbehandlung verwendet.
-                    if ($GLOBALS['CONTENT']->DBTableName == 'szenisch' OR 
-                        $GLOBALS['CONTENT']->DBTableName == 'portraet' OR 
-                        $GLOBALS['CONTENT']->DBTableName == 'medien_fotos' OR
-                        $GLOBALS['CONTENT']->DBTableName == 'downloads_fotos' OR
-                        $GLOBALS['CONTENT']->DBTableName == 'projekte_duo' OR
-                        $GLOBALS['CONTENT']->DBTableName == 'projekte_publikation' OR                        
-                        $GLOBALS['CONTENT']->DBTableName == 'kontakt') {          
+                    if ($GLOBALS['CONTENT']->DBTableName == 'chiefdoctor' OR 
+                        $GLOBALS['CONTENT']->DBTableName == 'homeopaths' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'gynecologists' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'therapists' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'neurologists' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'psychologists' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'administration' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'guidebooks' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'for_parents' OR
+                        $GLOBALS['CONTENT']->DBTableName == 'for_specialists') {          
                         if ($this->checkImageFile() === false) {
                             return false;
                         }
@@ -212,36 +223,20 @@ class EntryHandler
                         switch ($GLOBALS['CONTENT']->DBTableName) {
                           
                             //Falls die Bilder für die Seite 'Fotos - szenisch' wird die Maximalbeite auf 200 Pixel beschränkt.
-                            case 'portraet':         //fallthrough                  
-                            case 'medien_fotos':                           
-                            case 'szenisch':                           
+                            case 'chiefdoctor':     //fallthrough
+                            case 'homeopaths': 
+                            case 'gynecologists':
+                            case 'therapists':
+                            case 'neurologists':
+                            case 'psychologists': 
+                            case 'administration':
+                            case 'guidebooks':              
+                            case 'for_parents':
+                            case 'for_specialists':                           
                                 
                                 $this->createThumbnail('thumb', 140, 'auto');
                         
-                            break;                                    
-                            
-                            //Falls die Bilder für die Seite 'Downloads - fotos' wird die Maximalbeite auf 200 Pixel beschränkt
-                            case 'kontakt':
-
-                                $this->createThumbnail('thumb', 160, 'auto');
-                        
-                            break; 
-                                                     
-                            //Falls die Bilder für die Seite 'Downloads - fotos', wird zusätzlich das Bild für die lightbox auf eine maximale Breite zugeschnitten
-                            case 'downloads_fotos':                           
-                                
-                                $this->createThumbnail('thumb', 160, 'auto');
-                                $this->createThumbnail('lightbox', 900, 'orig');
-                        
-                            break; 
-                            
-                            //Falls die Bilder für die Seite 'Downloads - fotos' wird die Maximalbeite auf 200 Pixel beschränkt
-                            case 'projekte_duo':     //fallthrough                         
-                            case 'projekte_publikation':                           
-                                
-                                $this->createThumbnail('thumb', 160, 'orig');
-                        
-                            break;                                                     
+                            break;                                                                                                                                               
                         }
                         
                         $this->addImage();
@@ -262,59 +257,59 @@ class EntryHandler
                         }                        
                     }            
                     
-                    //Wenn es sich um die Seite 'video' handelt, werden die Methoden zur Videobehandlung verwendet.            
-                    if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {          
-                        if ($this->checkVideoFile() === false) {
-                            return false;
-                        }
-                        $this->addVideo();   
-                        $sqlData       .= PROJECT_VIDEO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
-                        $sqlDataUpdate .= "filepath = '".PROJECT_VIDEO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
-                        $fieldnames    .= 'filepath, ';                           
-                    }
-                    
-                    //Wenn es sich um die Seite 'tonbeispiele' handelt, werden die Methoden zur Audiobehandlung verwendet.                        
-                    if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
-                        $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {          
-                        if ($this->checkAudioFile() === false) {
-                            return false;
-                        }
-                        $this->addAudio();
-                        $sqlData       .= PROJECT_AUDIO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
-                        $sqlDataUpdate .= "filepath = '".PROJECT_AUDIO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
-                        $fieldnames    .= 'filepath, ';                              
-                    }           
-                    
-                    //Wenn es sich um die Seite 'downloads_cv' handelt, werden die Methoden zur PDF-Behandlung verwendet.                        
-                    if ($GLOBALS['CONTENT']->DBTableName == 'downloads_cv') {          
-                        
-                        //Es ist wird überprüft, ob mehrere Dateien hochgeladen wurden und bei Erfolgsfall der zu prüfende Dateityp ermittelt.
-                        if (isset($_POST['filetypes']) AND !empty($_POST['filetypes'])) {
-                                                    
-                            $unserFiletypes = unserialize($_POST['filetypes']);
-                            
-                            //Wenn es eine Word-Datei sein soll.
-                            if ($unserFiletypes[$i] == 'word') {
-                                if ($this->checkWordFile() === false) {
-                                return false;
-                                }                            
-                                $sqlData       .= PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
-                                $sqlDataUpdate .= "filepath_word = '".PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
-                                $fieldnames    .= 'filepath_word, ';                            
-                            }
-                        
-                            //Wenn es eine PDF-Datei sein soll.                        
-                            if ($unserFiletypes[$i] == 'pdf') {
-                                if ($this->checkPdfFile() === false) {
-                                return false;
-                                }
-                                $sqlData       .= PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
-                                $sqlDataUpdate .= "filepath_pdf = '".PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
-                                $fieldnames    .= 'filepath_pdf, ';                            
-                            }                        
-                            $this->addFile();                                                                               
-                        }
-                    }
+//                    //Wenn es sich um die Seite 'video' handelt, werden die Methoden zur Videobehandlung verwendet.            
+//                    if ($GLOBALS['CONTENT']->DBTableName == 'medien_filme') {          
+//                        if ($this->checkVideoFile() === false) {
+//                            return false;
+//                        }
+//                        $this->addVideo();   
+//                        $sqlData       .= PROJECT_VIDEO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
+//                        $sqlDataUpdate .= "filepath = '".PROJECT_VIDEO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
+//                        $fieldnames    .= 'filepath, ';                           
+//                    }
+//                    
+//                    //Wenn es sich um die Seite 'tonbeispiele' handelt, werden die Methoden zur Audiobehandlung verwendet.                        
+//                    if ($GLOBALS['CONTENT']->DBTableName == 'medien_klassisch' OR
+//                        $GLOBALS['CONTENT']->DBTableName == 'medien_chanson') {          
+//                        if ($this->checkAudioFile() === false) {
+//                            return false;
+//                        }
+//                        $this->addAudio();
+//                        $sqlData       .= PROJECT_AUDIO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
+//                        $sqlDataUpdate .= "filepath = '".PROJECT_AUDIO_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
+//                        $fieldnames    .= 'filepath, ';                              
+//                    }           
+//                    
+//                    //Wenn es sich um die Seite 'downloads_cv' handelt, werden die Methoden zur PDF-Behandlung verwendet.                        
+//                    if ($GLOBALS['CONTENT']->DBTableName == 'downloads_cv') {          
+//                        
+//                        //Es ist wird überprüft, ob mehrere Dateien hochgeladen wurden und bei Erfolgsfall der zu prüfende Dateityp ermittelt.
+//                        if (isset($_POST['filetypes']) AND !empty($_POST['filetypes'])) {
+//                                                    
+//                            $unserFiletypes = unserialize($_POST['filetypes']);
+//                            
+//                            //Wenn es eine Word-Datei sein soll.
+//                            if ($unserFiletypes[$i] == 'word') {
+//                                if ($this->checkWordFile() === false) {
+//                                return false;
+//                                }                            
+//                                $sqlData       .= PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
+//                                $sqlDataUpdate .= "filepath_word = '".PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
+//                                $fieldnames    .= 'filepath_word, ';                            
+//                            }
+//                        
+//                            //Wenn es eine PDF-Datei sein soll.                        
+//                            if ($unserFiletypes[$i] == 'pdf') {
+//                                if ($this->checkPdfFile() === false) {
+//                                return false;
+//                                }
+//                                $sqlData       .= PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."', '";
+//                                $sqlDataUpdate .= "filepath_pdf = '".PROJECT_DOWNLOAD_PATH."/".$GLOBALS['CONTENT']->DBTableName."/".$this->DB->MySQLiObj->real_escape_string(trim($_FILES['file']['name']))."',";                          
+//                                $fieldnames    .= 'filepath_pdf, ';                            
+//                            }                        
+//                            $this->addFile();                                                                               
+//                        }
+//                    }
                 }    
             }//End of for
         }
@@ -540,98 +535,98 @@ class EntryHandler
     }
     
     
-    /**
-     * Überprüfung der hochzuladenden Dateien
-     * 
-     * Die im Formular übermittelten Dateien werden auf ihren Typ und ihre Grösse überprüft und beim Fehlerfall
-     * eine Meldung generiert.
-     * Erlaubt sind nur die Typen 'jpg', 'gif' und 'png'. Die Höchstgrenze der Dateigrösse liegt bei 2MB (serverseitige Beschränkung).
-     */
-    private function checkVideoFile()
-    {        
-        if ($_FILES['file']['type'] !== 'video/x-flv') {
-            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"flv"</em> sein!</p>';
-        }
-        if ($_FILES['file']['size'] > '7000000') {
-            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
-        }        
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }
-        return true;  
-    }    
-
-    private function checkAudioFile()
-    {        
-        if ($_FILES['file']['type'] !== 'audio/mpeg3' AND 
-            $_FILES['file']['type'] !== 'audio/x-mpeg-3' AND
-            $_FILES['file']['type'] !== 'audio/x-mpeg' AND 
-            $_FILES['file']['type'] !== 'audio/mpeg') {
-            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"mp3"</em> sein!</p>';
-        }
-        if ($_FILES['file']['size'] > '7000000') {
-            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
-        }        
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }
-        return true;  
-    } 
-    
-    private function checkWordFile()
-    {              
-        if ($_FILES['file']['type'] !== 'application/msword' AND
-            $_FILES['file']['type'] !== 'application/vnd.oasis.opendocument.text') {
-            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"doc, odt"</em> sein!</p>';
-        }
-        if ($_FILES['file']['size'] > '7000000') {
-            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
-        }        
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }
-        return true;  
-    }     
-    
-    
-    private function checkPdfFile()
-    {              
-        if ($_FILES['file']['type'] !== 'application/pdf' AND
-            $_FILES['file']['type'] !== 'application/x-pdf' AND
-            $_FILES['file']['type'] !== 'text/pdf' AND
-            $_FILES['file']['type'] !== 'text/x-pdf' AND
-            $_FILES['file']['type'] !== 'application/acrobat' AND
-            $_FILES['file']['type'] !== 'application/vnd.pdf') {
-            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"pdf"</em> sein!</p>';
-        }
-        if ($_FILES['file']['size'] > '7000000') {
-            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
-        }        
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }
-        return true;  
-    }     
+//    /**
+//     * Überprüfung der hochzuladenden Dateien
+//     * 
+//     * Die im Formular übermittelten Dateien werden auf ihren Typ und ihre Grösse überprüft und beim Fehlerfall
+//     * eine Meldung generiert.
+//     * Erlaubt sind nur die Typen 'jpg', 'gif' und 'png'. Die Höchstgrenze der Dateigrösse liegt bei 2MB (serverseitige Beschränkung).
+//     */
+//    private function checkVideoFile()
+//    {        
+//        if ($_FILES['file']['type'] !== 'video/x-flv') {
+//            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"flv"</em> sein!</p>';
+//        }
+//        if ($_FILES['file']['size'] > '7000000') {
+//            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
+//        }        
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }
+//        return true;  
+//    }    
+//
+//    private function checkAudioFile()
+//    {        
+//        if ($_FILES['file']['type'] !== 'audio/mpeg3' AND 
+//            $_FILES['file']['type'] !== 'audio/x-mpeg-3' AND
+//            $_FILES['file']['type'] !== 'audio/x-mpeg' AND 
+//            $_FILES['file']['type'] !== 'audio/mpeg') {
+//            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"mp3"</em> sein!</p>';
+//        }
+//        if ($_FILES['file']['size'] > '7000000') {
+//            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
+//        }        
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }
+//        return true;  
+//    } 
+//    
+//    private function checkWordFile()
+//    {              
+//        if ($_FILES['file']['type'] !== 'application/msword' AND
+//            $_FILES['file']['type'] !== 'application/vnd.oasis.opendocument.text') {
+//            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"doc, odt"</em> sein!</p>';
+//        }
+//        if ($_FILES['file']['size'] > '7000000') {
+//            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
+//        }        
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }
+//        return true;  
+//    }     
+//    
+//    
+//    private function checkPdfFile()
+//    {              
+//        if ($_FILES['file']['type'] !== 'application/pdf' AND
+//            $_FILES['file']['type'] !== 'application/x-pdf' AND
+//            $_FILES['file']['type'] !== 'text/pdf' AND
+//            $_FILES['file']['type'] !== 'text/x-pdf' AND
+//            $_FILES['file']['type'] !== 'application/acrobat' AND
+//            $_FILES['file']['type'] !== 'application/vnd.pdf') {
+//            $this->ErrorStr = '<p>Das Dateiformat zum Hochladen darf nur <em>"pdf"</em> sein!</p>';
+//        }
+//        if ($_FILES['file']['size'] > '7000000') {
+//            $this->ErrorStr = '<p>Die Datei zum Hochladen darf höchstens 7MB gross sein!</p>';
+//        }        
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }
+//        return true;  
+//    }     
 
 
     private function addImage()
@@ -760,81 +755,81 @@ class EntryHandler
     }
 
     
-    private function addVideo()
-    { 
-        $uploadDir  = SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
-        $uploadFile = $uploadDir.$_FILES['file']['name'];
-        
-        $uploadFile = $this->checkFileExistence($uploadFile);                
-                    
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
-        
-        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
-            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
-        }      
-        
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
-          
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }                                    
-    }  
-    
-    
-    private function addAudio()
-    { 
-        $uploadDir  = SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
-        $uploadFile = $uploadDir.$_FILES['file']['name'];
-        
-        $uploadFile = $this->checkFileExistence($uploadFile);                
-                    
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
-        
-        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
-            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
-        }      
-        
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
-          
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }                                    
-    }  
-    
-    private function addFile()
-    { 
-        $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
-        $uploadFile = $uploadDir.$_FILES['file']['name'];
-        
-        $uploadFile = $this->checkFileExistence($uploadFile);                
-                    
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-        
-        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
-            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
-        }      
-        
-        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-          
-        if ($this->ErrorStr !== null) {
-            $this->ErrorObj = false;
-            
-            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
-            //dass das Formular leer angezeigt wird.)
-            $this->DB->lastSQLStatus = false;
-            return false;
-        }                                    
-    }            
+//    private function addVideo()
+//    { 
+//        $uploadDir  = SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
+//        $uploadFile = $uploadDir.$_FILES['file']['name'];
+//        
+//        $uploadFile = $this->checkFileExistence($uploadFile);                
+//                    
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        
+//        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
+//            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
+//        }      
+//        
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//          
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }                                    
+//    }  
+//    
+//    
+//    private function addAudio()
+//    { 
+//        $uploadDir  = SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
+//        $uploadFile = $uploadDir.$_FILES['file']['name'];
+//        
+//        $uploadFile = $this->checkFileExistence($uploadFile);                
+//                    
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        
+//        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
+//            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
+//        }      
+//        
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//          
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }                                    
+//    }  
+//    
+//    private function addFile()
+//    { 
+//        $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';
+//        $uploadFile = $uploadDir.$_FILES['file']['name'];
+//        
+//        $uploadFile = $this->checkFileExistence($uploadFile);                
+//                    
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        
+//        if (!move_uploaded_file($_FILES['file']['tmp_name'], $uploadFile)) {
+//            $this->ErrorStr = '<p>Die Datei <em>'.$_FILES['file']['name'].'</em> konnte nicht hochgeladen werden!</p>';          
+//        }      
+//        
+//        ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//          
+//        if ($this->ErrorStr !== null) {
+//            $this->ErrorObj = false;
+//            
+//            //Datenbankoperation fand nicht statt; deshalb wird der SQLStatus auf false gesetzt. (Verhindert, 
+//            //dass das Formular leer angezeigt wird.)
+//            $this->DB->lastSQLStatus = false;
+//            return false;
+//        }                                    
+//    }            
     
     
     private function deleteImage($entry = null)
@@ -928,138 +923,138 @@ class EntryHandler
     }
     
     
-    private function deleteVideo($entry = null)
-    {
-        //Dateneintrags-ID in Variable schreiben.
-        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
-        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
-            $entryId = $_GET['delId'];
-        }
-        
-        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
-        if (!empty($entry)) {
-            $entryId = $entry;
-        }
-        
-        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
-        $sql         = "SELECT filepath FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
-        $result      = $this->DB->query($sql); 
-        $arrayResult = $result->fetch_assoc();
-        
-        //Wenn eine Video-Datei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
-        if (!empty($arrayResult['filepath'])) {        
-            $filepath    = explode('/',$arrayResult['filepath']);
-            $filename    = array_pop($filepath);   
-                 
-            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
-            $uploadDir  = SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
-            
-            //Die Video-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
-            if (!unlink($uploadDir.$filename)) {
-                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
-                $this->ErrorObj = false;                   
-            }        
-        
-            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
-        }
-    }
-    
-
-    private function deleteAudio($entry = null)
-    {
-        //Dateneintrags-ID in Variable schreiben.
-        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
-        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
-            $entryId = $_GET['delId'];
-        }
-        
-        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
-        if (!empty($entry)) {
-            $entryId = $entry;
-        }
-        
-        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
-        $sql         = "SELECT filepath FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
-        $result      = $this->DB->query($sql); 
-        $arrayResult = $result->fetch_assoc();
-        
-        //Wenn eine Audiodatei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
-        if (!empty($arrayResult['filepath'])) {        
-            $filepath    = explode('/',$arrayResult['filepath']);
-            $filename    = array_pop($filepath);   
-                 
-            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
-            $uploadDir  = SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
-            
-            //Die Audio-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
-            if (!unlink($uploadDir.$filename)) {
-                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
-                $this->ErrorObj = false;                   
-            }        
-        
-            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
-        }
-    }        
-    
-    private function deleteFile($entry = null)
-    {
-        //Dateneintrags-ID in Variable schreiben.
-        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
-        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
-            $entryId = $_GET['delId'];
-        }
-        
-        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
-        if (!empty($entry)) {
-            $entryId = $entry;
-        }
-        
-        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
-        $sql         = "SELECT filepath_word, filepath_pdf FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
-        $result      = $this->DB->query($sql); 
-        $arrayResult = $result->fetch_assoc();
-        
-        //Wenn eine PDF-datei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
-        if (!empty($arrayResult['filepath_word'])) {        
-            $filepath    = explode('/',$arrayResult['filepath_word']);
-            $filename    = array_pop($filepath);   
-                 
-            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
-            $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-            
-            //Die PDF-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
-            if (!unlink($uploadDir.$filename)) {
-                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
-                $this->ErrorObj = false;                   
-            }        
-        
-            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-        }
-        
-        if (!empty($arrayResult['filepath_pdf'])) {        
-            $filepath    = explode('/',$arrayResult['filepath_pdf']);
-            $filename    = array_pop($filepath);   
-                 
-            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
-            $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-            
-            //Die PDF-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
-            if (!unlink($uploadDir.$filename)) {
-                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
-                $this->ErrorObj = false;                   
-            }        
-        
-            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
-            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
-        }        
-    }     
+//    private function deleteVideo($entry = null)
+//    {
+//        //Dateneintrags-ID in Variable schreiben.
+//        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
+//            $entryId = $_GET['delId'];
+//        }
+//        
+//        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (!empty($entry)) {
+//            $entryId = $entry;
+//        }
+//        
+//        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
+//        $sql         = "SELECT filepath FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
+//        $result      = $this->DB->query($sql); 
+//        $arrayResult = $result->fetch_assoc();
+//        
+//        //Wenn eine Video-Datei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
+//        if (!empty($arrayResult['filepath'])) {        
+//            $filepath    = explode('/',$arrayResult['filepath']);
+//            $filename    = array_pop($filepath);   
+//                 
+//            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
+//            $uploadDir  = SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//            
+//            //Die Video-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
+//            if (!unlink($uploadDir.$filename)) {
+//                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
+//                $this->ErrorObj = false;                   
+//            }        
+//        
+//            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_VIDEO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        }
+//    }
+//    
+//
+//    private function deleteAudio($entry = null)
+//    {
+//        //Dateneintrags-ID in Variable schreiben.
+//        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
+//            $entryId = $_GET['delId'];
+//        }
+//        
+//        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (!empty($entry)) {
+//            $entryId = $entry;
+//        }
+//        
+//        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
+//        $sql         = "SELECT filepath FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
+//        $result      = $this->DB->query($sql); 
+//        $arrayResult = $result->fetch_assoc();
+//        
+//        //Wenn eine Audiodatei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
+//        if (!empty($arrayResult['filepath'])) {        
+//            $filepath    = explode('/',$arrayResult['filepath']);
+//            $filename    = array_pop($filepath);   
+//                 
+//            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
+//            $uploadDir  = SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//            
+//            //Die Audio-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
+//            if (!unlink($uploadDir.$filename)) {
+//                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
+//                $this->ErrorObj = false;                   
+//            }        
+//        
+//            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_AUDIO_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        }
+//    }        
+//    
+//    private function deleteFile($entry = null)
+//    {
+//        //Dateneintrags-ID in Variable schreiben.
+//        //Wenn eine GET-Variable 'delId' übergeben wurde, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (isset($_GET['delId']) AND !empty($_GET['delId'])) {
+//            $entryId = $_GET['delId'];
+//        }
+//        
+//        //Wenn die Methoden-Variable 'entry' gefüllt ist, wird sie als Identifikator des Dateneintrags verwendet.
+//        if (!empty($entry)) {
+//            $entryId = $entry;
+//        }
+//        
+//        //Zuerst wird der Dateipfad aus der Datenbank gelesen und in der Variable 'filepath' gespeichert.
+//        $sql         = "SELECT filepath_word, filepath_pdf FROM ".$GLOBALS['CONTENT']->DBTableName." WHERE id = ".$entryId."";
+//        $result      = $this->DB->query($sql); 
+//        $arrayResult = $result->fetch_assoc();
+//        
+//        //Wenn eine PDF-datei zum Dateieintrag zugeordnet ist, wird diese gelöscht.
+//        if (!empty($arrayResult['filepath_word'])) {        
+//            $filepath    = explode('/',$arrayResult['filepath_word']);
+//            $filename    = array_pop($filepath);   
+//                 
+//            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
+//            $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//            
+//            //Die PDF-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
+//            if (!unlink($uploadDir.$filename)) {
+//                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
+//                $this->ErrorObj = false;                   
+//            }        
+//        
+//            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        }
+//        
+//        if (!empty($arrayResult['filepath_pdf'])) {        
+//            $filepath    = explode('/',$arrayResult['filepath_pdf']);
+//            $filename    = array_pop($filepath);   
+//                 
+//            //Das entsprechende Verzeichnis wird bearbeitbar gemacht.
+//            $uploadDir  = SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName.'/';        
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0747, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//            
+//            //Die PDF-Datei wird gelöscht und im Fehlerfall eine Meldung generiert.
+//            if (!unlink($uploadDir.$filename)) {
+//                $this->ErrorStr = '<p>Die Datei <em>'.$filename.'</em> konnte nicht gelöscht werden!</p>';   
+//                $this->ErrorObj = false;                   
+//            }        
+//        
+//            //Das Verzeichnis wird auf die ursprünglichen Zugriffsrechte zurückgesetzt.
+//            ftp_chmod($GLOBALS['FTP']->FTPConn, 0755, SERVER_DOWNLOAD_PATH.$GLOBALS['CONTENT']->DBTableName);
+//        }        
+//    }     
     
     
     /**

@@ -17,8 +17,8 @@ $Content->selectContent();
 $Content->printContent();
 
 //News-Feld mit Ausgabe
-//$News = new News();
-//$News->printFieldNews("3");
+$News = new News();
+$News->printFieldNews("5");
 
 //Abschluss des Body-Teils und Html-Teils ausgeben
 HTML::printFooter();

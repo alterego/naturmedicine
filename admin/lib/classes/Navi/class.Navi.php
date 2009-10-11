@@ -18,47 +18,35 @@ class Navi
      * Der Schlüssel 'sitename' enthält den internen Bezeichner der Seite.
      * Der Schlüssel 'linktext' enthält den ausgegebenen Linktext.
      */
-    private static $MainNaviArray = array(
+    public static $MainNaviArray = array(
                                 0 => array(
                                     'sitename' => "home",
-                                    'linktext' => "About"           
+                                    'linktext' => "о нас"           
                                     ),
                                 1 => array(
-                                    'sitename' => "konzerte",
-                                    'linktext' => "Konzerte" 
+                                    'sitename' => "patients",
+                                    'linktext' => "для пациентов" 
                                     ),
                                 2 => array(
-                                    'sitename' => "repertoire",
-                                    'linktext' => "Repertoire"                    
+                                    'sitename' => "doctors",
+                                    'linktext' => "для врачей"                    
                                     ),
                                 3 => array(
-                                    'sitename' => "fotos",
-                                    'linktext' => "Fotos"                     
+                                    'sitename' => "articles",
+                                    'linktext' => "статьи"                     
                                     ),
                                 4 => array(
-                                    'sitename' => "medien",
-                                    'linktext' => "Medien"
+                                    'sitename' => "books",
+                                    'linktext' => "книги"
                                     ),
                                 5 => array(
-                                    'sitename' => "projekte",
-                                    'linktext' => "Projekte"
+                                    'sitename' => "links",
+                                    'linktext' => "наши друзья"
                                     ),                                    
                                 6 => array(
-                                    'sitename' => "downloads",
-                                    'linktext' => "Downloads"
-                                    ),  
-                                7 => array(
-                                    'sitename' => "kontakt",
-                                    'linktext' => "Kontakt"
-                                    ),   
-                                8 => array(
-                                    'sitename' => "links",
-                                    'linktext' => "Links"
-                                    ),       
-                                9 => array(
-                                    'sitename' => "excerpts",
-                                    'linktext' => "Zitate"
-                                    )                                                                     
+                                    'sitename' => "contact",
+                                    'linktext' => "контакты"
+                                    )                                                                    
                                 );  
     
     
@@ -69,107 +57,146 @@ class Navi
      * Der Schlüssel 'linktext' enthält den ausgegebenen Linktext.
      */
     public static $SubNaviArray = array(
-                                'repertoire' => array(
+                                'home' => array(
                                               0 => array(
-                                                  'sitename' => "klassisch",
-                                                  'linktext' => "klassisch"           
+                                                  'sitename' => "our_philosophy",
+                                                  'linktext' => "наша философия"           
                                                   ),
                                               1 => array(
-                                                  'sitename' => "chanson",
-                                                  'linktext' => "chanson" 
-                                                  )
-                                              ),
-                                'fotos' => array(
-                                              0 => array(
-                                                  'sitename' => "szenisch",
-                                                  'linktext' => "szenisch"
-                                                  ),
-                                              1 => array(
-                                                  'sitename' => "portraet",
-                                                  'linktext' => "portrait"
-                                                  )
-                                              ),    
-                                'medien' => array(
-                                              0 => array(
-                                                  'sitename' => "medien_musik",
-                                                  'linktext' => "musik"           
-                                                  ),
-                                              1 => array(
-                                                  'sitename' => "medien_filme",
-                                                  'linktext' => "filme" 
-                                                  )
-                                              ),
-                                'projekte' => array(
-                                              0 => array(
-                                                  'sitename' => "projekte_duo",
-                                                  'linktext' => "duo"           
-                                                  ),
-                                              1 => array(
-                                                  'sitename' => "projekte_publikation",
-                                                  'linktext' => "publikation" 
+                                                  'sitename' => "chiefdoctor",
+                                                  'linktext' => "главный врач" 
                                                   ),
                                               2 => array(
-                                                  'sitename' => "projekte_forschung",
-                                                  'linktext' => "forschung" 
-                                                  )                                                  
-                                              ),                                               
-                                'downloads' => array(
-                                              0 => array(
-                                                  'sitename' => "downloads_fotos",
-                                                  'linktext' => "fotos"
-                                                  ),
-                                              1 => array(
-                                                  'sitename' => "downloads_cv",
-                                                  'linktext' => "cv"
-                                                  )                                                  
-                                              )                                              
-                                        );     
-    
-    
-    public static $SubSubNaviArray = array(
-                                'klassisch' => array(
-                                              0 => array(
-                                                  'sitename' => "oper",
-                                                  'linktext' => "oper"
-                                                  ),
-                                              1 => array(
-                                                  'sitename' => "rollen",
-                                                  'linktext' => "rollen"
-                                                  ),
-                                              2 => array(
-                                                  'sitename' => "geistlich",
-                                                  'linktext' => "geistliche musik"
+                                                  'sitename' => "homeopaths",
+                                                  'linktext' => "врачи-гомеопаты"           
                                                   ),
                                               3 => array(
-                                                  'sitename' => "liedzyklen",
-                                                  'linktext' => "liedzyklen"
-                                                  )                                                                                                     
-                                              ),      
-                                'chanson' => array(
+                                                  'sitename' => "gynecologists",
+                                                  'linktext' => "акушеры-гинекологи" 
+                                                  ),
+                                              4 => array(
+                                                  'sitename' => "therapists",
+                                                  'linktext' => "мануальные терапевты"           
+                                                  ),
+                                              5 => array(
+                                                  'sitename' => "neurologists",
+                                                  'linktext' => "неврологи" 
+                                                  ),
+                                              6 => array(
+                                                  'sitename' => "psychologists",
+                                                  'linktext' => "психологи"           
+                                                  ),
+                                              7 => array(
+                                                  'sitename' => "administration",
+                                                  'linktext' => "администрация" 
+                                                  )                                                                                                                                                      
+                                              ),
+                                'patients' => array(
                                               0 => array(
-                                                  'sitename' => "franzoesisch",
-                                                  'linktext' => "französisch"
+                                                  'sitename' => "what_is_homeopathy",
+                                                  'linktext' => "что такое гомеопатия"          
                                                   ),
                                               1 => array(
-                                                  'sitename' => "deutsch",
-                                                  'linktext' => "deutsch"
+                                                  'sitename' => "lifestyle",
+                                                  'linktext' => "образ жизни" 
                                                   ),
                                               2 => array(
-                                                  'sitename' => "englisch",
-                                                  'linktext' => "englisch"
-                                                  )                                                
-                                              ),
-                                'medien_musik' => array(
-                                              0 => array(
-                                                  'sitename' => "medien_klassisch",
-                                                  'linktext' => "klassisch"
+                                                  'sitename' => "when_call_doctor",
+                                                  'linktext' => "когда нужио звонить врачу"           
+                                                  ),
+                                              3 => array(
+                                                  'sitename' => "simple_answers",
+                                                  'linktext' => "часто задаваемые вопросы" 
+                                                  ),
+                                              4 => array(
+                                                  'sitename' => "how_find_doctor",
+                                                  'linktext' => "как найти врача"           
+                                                  ),
+                                              5 => array(
+                                                  'sitename' => "what_to_read",
+                                                  'linktext' => "что можно почитать" 
+                                                  ),
+                                              6 => array(
+                                                  'sitename' => "advertisements_patients",
+                                                  'linktext' => "объявления"           
+                                                  ) 
+                                              ),    
+                                'doctors' => array(
+                                             0 => array(
+                                                  'sitename' => "clinical_discussions",
+                                                  'linktext' => "клинические разборы"           
                                                   ),
                                               1 => array(
-                                                  'sitename' => "medien_chanson",
-                                                  'linktext' => "chanson"
-                                                  )                                                
-                                              )                                                                                                                                      
+                                                  'sitename' => "coming_seminars",
+                                                  'linktext' => "ближайшие семинары" 
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "past_seminars",
+                                                  'linktext' => "прошедшие семинары"           
+                                                  ),
+                                              3 => array(
+                                                  'sitename' => "advertisements_doctors",
+                                                  'linktext' => "объявления" 
+                                                  )
+                                              ),
+                                'articles' => array(
+                                              0 => array(
+                                                  'sitename' => "articles_philosophy",
+                                                  'linktext' => "философия"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "articles_methodology",
+                                                  'linktext' => "методология" 
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "articles_simple_answers",
+                                                  'linktext' => "просто о сложном"           
+                                                  )                                               
+                                              ),                                              
+                                'books' => array(
+                                              0 => array(
+                                                  'sitename' => "guidebooks",
+                                                  'linktext' => "домашние лечебники"
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "for_parents",
+                                                  'linktext' => "информация для родителей"
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "for_specialists",
+                                                  'linktext' => "для специалистов"           
+                                                  )                                                      
+                                              ), 
+                                'links' => array(
+                                              0 => array(
+                                                  'sitename' => "editions",
+                                                  'linktext' => "издательства"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "parent_schools",
+                                                  'linktext' => "родительские школы" 
+                                                  ),
+                                              2 => array(
+                                                  'sitename' => "info_sources",
+                                                  'linktext' => "информационные ресурсы"           
+                                                  ),
+                                              3 => array(
+                                                  'sitename' => "centers_and_doctors",
+                                                  'linktext' => "центры и врачи"           
+                                                  )                                             
+                                              ), 
+                                'contact' => array(
+                                              0 => array(
+                                                  'sitename' => "contact_address",
+                                                  'linktext' => "контактный адрес"           
+                                                  ),
+                                              1 => array(
+                                                  'sitename' => "roadmap",
+                                                  'linktext' => "как проехать" 
+                                                  )
+                                              )                                                                                                                                          
                                         );    
+           
     
     /**
      * Die Footernavigations-Links (wie Impressum, Sitemap etc.) sind in ein Array gesetzt:
@@ -200,8 +227,7 @@ class Navi
         //Wenn nicht eine Seite der Footer-Navigation ausgewählt ist, wird der Hauptnavigations-Link ausgegeben.
         foreach (self::$MainNaviArray as $naviRow) {
             if ("impressum" !== basename($_SERVER['PHP_SELF'],".php") or
-                "sitemap"   !== basename($_SERVER['PHP_SELF'],".php") or 
-                "links"     !== basename($_SERVER['PHP_SELF'],".php")) {        
+                "sitemap"   !== basename($_SERVER['PHP_SELF'],".php")) {        
                   
                 //Wenn keine Unternavigation existiert.
                 if (!array_key_exists($naviRow['sitename'], self::$SubNaviArray)) {
@@ -266,82 +292,28 @@ class Navi
                         
                     //Jeder Unternavigations-Link wird abgeklärt.
                     foreach (self::$SubNaviArray[$naviRow['sitename']] as $subnaviRow) {                         
-                            
-                        //Wenn keine Unternavigation der Unternavigation existiert.
-                        if (!array_key_exists($subnaviRow['sitename'], self::$SubSubNaviArray)) {
-
-                            //Wenn die Seite ausgewählt ist.
-                            if (isset($_GET['subnav']) AND $subnaviRow['sitename'] == $_GET['subnav']) {                                                 
-                                        
-                                echo '
-              <li><a class="selected">'.$subnaviRow['linktext'].'</a></li>';
-              
-                                self::$subNav = '<div class="pfeil">&nbsp;&#10174;&nbsp;</div><div class="great">'.$subnaviRow['linktext'].'</div>';
-                            }
-                            
-                            //Wenn die Seite nicht ausgewählt ist.
-                            else {
-                                echo '
-              <li><a href="'.$mainSite.'?subnav='.$subnaviRow['sitename'].'">'.$subnaviRow['linktext'].'</a></li>';
-                            }                            
+                     
+                        //Wenn die Seite ausgewählt ist.
+                        if (isset($_GET['subnav']) AND $subnaviRow['sitename'] == $_GET['subnav']) {                                                 
+                                    
+                            echo '
+          <li><a class="selected">'.$subnaviRow['linktext'].'</a></li>';
+          
+                            self::$subNav = '<div class="pfeil">&nbsp;&#10174;&nbsp;</div><div class="great">'.$subnaviRow['linktext'].'</div>';
                         }
                         
-                        //Wenn eine Unternavigation der Unternavigation existiert.
-                        else {           
-                                                                            
-                           //Inhalt der GET-Variable überprüfen
-                            if (isset($_GET['subsubnav'])) {
-                                if (Security::checkWhitelistGET($_GET['subsubnav'], 'subnav') === false) {
-                                    $_GET['subsubnav'] = self::$SubSubNaviArray[$subnaviRow['sitename']][0]['sitename'];
-                                }                             
-                            }                            
-                           
-                            //Wenn die Seite ausgewählt ist.
-                            if (isset($_GET['subnav']) AND $subnaviRow['sitename'] == $_GET['subnav']) {                                                 
-                                echo '
-              <li class="selected"><a class="selected">'.$subnaviRow['linktext'].'</a>
-                <ul>';         
-                
-                                self::$subNav = '<div class="pfeil">&nbsp;&#10174;&nbsp;</div><div class="great">'.$subnaviRow['linktext'].'</div>';
-                            }
-                            
-                            //Wenn die Seite nicht ausgewählt ist.
-                            else {
-                                echo '
-              <li><a>'.$subnaviRow['linktext'].'</a>
-                <ul>';
-                            }
-                                                        
-                            //Jeder Unternavigations-Link der Unternavigation wird abgeklärt, ob er ausgewählt ist.
-                            foreach (self::$SubSubNaviArray[$subnaviRow['sitename']] as $subsubnaviRow) {   
-                                
-                                //Wenn die Seite ausgewählt ist.
-                                if (isset($_GET['subsubnav']) AND $subsubnaviRow['sitename'] == $_GET['subsubnav']) {                                                 
-                                    echo '
-                  <li class="selected"><a class="selected">'.$subsubnaviRow['linktext'].'</a></li>';
-                  
-                                    self::$subSubNav = '<div class="pfeil">&nbsp;&#10174;&nbsp;</div><div class="great">'.$subsubnaviRow['linktext'].'</div>';
-                                } 
-                                
-                                //Wenn die Seite nicht ausgewählt ist.
-                                else {    
-									echo '
-                  <li><a href="'.$mainSite.'?subnav='.$subnaviRow['sitename'].'&subsubnav='.$subsubnaviRow['sitename'].'">'.$subsubnaviRow['linktext'].'</a></li>';
-                                }
-                            }
-                            
-                            //Schliessen des "ul" und "li" der Unternavigations-Links der Unternavigation.                            
+                        //Wenn die Seite nicht ausgewählt ist.
+                        else {
                             echo '
-                </ul>
-              </li>';
-                        }
+          <li><a href="'.$mainSite.'?subnav='.$subnaviRow['sitename'].'">'.$subnaviRow['linktext'].'</a></li>';
+                        }                            
                     }
                     
                     //Schliessen des "ul" und "li" der Unternavigations-Links.                            
                     echo '
             </ul>
           </li>'; 
-				}                                         
+				       }                                         
            }
         }
                                     

@@ -7,6 +7,9 @@ RewriteBase /naturmedicine/
 #Bild- und weiter Mediapfade, sowie die eingebundenen CSS- und JS-Dateien werden belassen.
 RewriteRule ^.+\.(gif|jpg|jpeg|png|css|js|mp3|swf|flv)$ - [NC,L]
 
+#Alle Admin-Seiten werden nicht beachtet.
+RewriteRule ^admin/ - [NC,L]
+
 #Die bare Domain-URL wird auf den Inhalt 'home' umgeleitet.
 RewriteRule ^$ index.php?sitename=home [L]
 
